@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Item;
 use App\Enums\ItemCondition;
+use App\Models\Category;
 
 class ItemSeeder extends Seeder
 {
@@ -24,6 +25,7 @@ class ItemSeeder extends Seeder
                 'description' => 'スタイリッシュなデザインのメンズ腕時計',
                 'price' => 15000,
                 'image_path' => 'images/items/1.jpg',
+                'category_id' => 1, // ファッション
             ],
             [
                 'seller_id' => 1,
@@ -33,6 +35,7 @@ class ItemSeeder extends Seeder
                 'description' => '高速で信頼性の高いハードディスク',
                 'price' => 5000,
                 'image_path' => 'images/items/2.jpg',
+                'category_id' => 2, // 家電
             ],
             [
                 'seller_id' => 1,
@@ -42,6 +45,7 @@ class ItemSeeder extends Seeder
                 'description' => '新鮮な玉ねぎ3束のセット',
                 'price' => 300,
                 'image_path' => 'images/items/3.jpg',
+                'category_id' => 10, // キッチン
             ],
             [
                 'seller_id' => 1,
@@ -51,6 +55,7 @@ class ItemSeeder extends Seeder
                 'description' => 'クラシックなデザインの革靴',
                 'price' => 4000,
                 'image_path' => 'images/items/4.jpg',
+                'category_id' => 5, // メンズ
             ],
             [
                 'seller_id' => 1,
@@ -60,6 +65,7 @@ class ItemSeeder extends Seeder
                 'description' => '高性能なノートパソコン',
                 'price' => 45000,
                 'image_path' => 'images/items/5.jpg',
+                'category_id' => 2, // 家電
             ],
             [
                 'seller_id' => 1,
@@ -69,6 +75,7 @@ class ItemSeeder extends Seeder
                 'description' => '高音質のレコーディング用マイク',
                 'price' => 8000,
                 'image_path' => 'images/items/6.jpg',
+                'category_id' => 2, // 家電
             ],
             [
                 'seller_id' => 1,
@@ -78,6 +85,7 @@ class ItemSeeder extends Seeder
                 'description' => 'おしゃれなショルダーバッグ',
                 'price' => 3500,
                 'image_path' => 'images/items/7.jpg',
+                'category_id' => 4, // レディース
             ],
             [
                 'seller_id' => 1,
@@ -87,6 +95,7 @@ class ItemSeeder extends Seeder
                 'description' => '使いやすいタンブラー',
                 'price' => 500,
                 'image_path' => 'images/items/8.jpg',
+                'category_id' => 10, // キッチン
             ],
             [
                 'seller_id' => 1,
@@ -96,6 +105,7 @@ class ItemSeeder extends Seeder
                 'description' => '手動のコーヒーミル',
                 'price' => 4000,
                 'image_path' => 'images/items/9.jpg',
+                'category_id' => 10, // キッチン
             ],
             [
                 'seller_id' => 1,
@@ -105,11 +115,16 @@ class ItemSeeder extends Seeder
                 'description' => '便利なメイクアップセット',
                 'price' => 2500,
                 'image_path' => 'images/items/10.jpg',
+                'category_id' => 6, // コスメ
             ],
         ];
 
         foreach ($items as $item) {
-            Item::create($item);
+            $categoryId = $item['category_id'];
+            unset($item['category_id']);
+
+            $createdItem = Item::create($item);
+            $createdItem->categories()->attach($categoryId);
         }
     }
 }
