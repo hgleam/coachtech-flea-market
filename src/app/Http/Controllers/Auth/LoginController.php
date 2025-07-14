@@ -39,7 +39,7 @@ class LoginController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            return redirect()->intended(route('home'))
+            return redirect()->intended(route('items.index'))
                 ->with('success', 'ログインしました');
         }
 
@@ -61,7 +61,7 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('home')
+        return redirect()->route('items.index')
             ->with('success', 'ログアウトしました');
     }
 }
