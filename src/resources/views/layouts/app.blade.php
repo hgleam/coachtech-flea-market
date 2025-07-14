@@ -7,30 +7,30 @@
     <meta name='csrf-token' content='{{ csrf_token() }}'>
 
     <!-- Styles -->
-    <link rel='stylesheet' href='{{ asset('css/style.css') }}'>
+    <link rel='stylesheet' href='{{ asset("css/style.css") }}'>
 
     <!-- Scripts -->
-    <script src='{{ asset('js/app.js') }}' defer></script>
+    <script src='{{ asset("js/app.js") }}' defer></script>
 </head>
 <body>
     <header class='header'>
         <div class='header__inner'>
-            <a href='{{ route('home') }}' class='header__logo'>
-                <img src='{{ asset('images/logo.svg') }}' alt='COACHTECH' class='header__logo-image'>
+            <a href='{{ route("items.index") }}' class='header__logo'>
+                <img src='{{ asset("images/logo.svg") }}' alt='COACHTECH' class='header__logo-image'>
             </a>
 
-            <div class='header__search'>
-                <input type='text' class='header__search-input' placeholder='なにをお探しですか？'>
-            </div>
+            <form action='{{ route("items.index") }}' method='GET' class='header__search'>
+                <input type='text' name='keyword' class='header__search-input' placeholder='なにをお探しですか？' value='{{ $keyword ?? "" }}'>
+            </form>
 
             <nav class='header__nav'>
                 @if (Auth::check())
-                <form method='POST' action='{{ route("logout") }}' class='header__nav-form'>
+                <form method='POST' action='{{ route("lojkkgout") }}' class='header__nav-form'>
                     @csrf
                     <button type='submit' class='header__nav-link header__nav-link--button'>ログアウト</button>
                 </form>
-                <a href='' class='header__nav-link'>マイページ</a>
-                <a href='' class='header__nav-button'>出品</a>
+                <a href='{{ route("profile.show") }}' class='header__nav-link'>マイページ</a>
+                <a href='{{ route("items.create") }}' class='header__nav-button'>出品</a>
                 @else
                 <!-- <a href='{{ route('register') }}' class='header__nav-link'>会員登録</a> -->
                 <a href='{{ route("login") }}' class='header__nav-link'>ログイン</a>

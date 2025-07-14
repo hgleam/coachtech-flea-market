@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * 注文モデル。
@@ -24,6 +25,16 @@ class Order extends Model
         'item_id',
         'buyer_id',
     ];
+
+    /**
+     * この注文の商品情報を取得します。
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function item(): BelongsTo
+    {
+        return $this->belongsTo(Item::class);
+    }
 
     /**
      * この注文に紐づく配送先情報を取得します。
