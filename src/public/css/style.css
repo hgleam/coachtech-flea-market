@@ -110,7 +110,7 @@ html {
     --header-background-color: #333333;
     --background-color: #FFFFFF;
     --background-color-dark: #E5E5E5;
-    --border-color: #DDDDDD;
+    --border-color: #5F5F5F;
     --header-text-color: #FFFFFF;
     --text-color: #333333;
     --button-color: #FFFFFF;
@@ -584,17 +584,22 @@ body {
 }
 /* 画像 */
 .item-page__image {
+    position: relative;
     width: 100%;
-    aspect-ratio: 1;
-    background: #f5f5f5;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #999;
-    font-size: var(--font-size-5xl);
-    font-weight: bold;
+    padding-top: 100%;
+    background-color: #f0f0f0;
+    overflow: hidden;
 }
+
+.item-page__image img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
 /* 情報コンテナ */
 .item-page__info-container {
     flex: 1;
@@ -780,12 +785,20 @@ body {
 
 /* コメントのアバター */
 .item-page__comment-avatar {
-    width: 40px;
-    height: 40px;
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
-    background-color: var(--background-color-dark);
-    flex-shrink: 0;
+    background-color: #ccc;
+    margin-right: 1rem;
+    overflow: hidden;
 }
+
+.item-page__comment-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 /* コメントのユーザー名 */
 .item-page__comment-user-name {
     font-size: var(--font-size-3xl);
@@ -837,6 +850,16 @@ body {
 /* コメントのフォームのボタンのホバー */
 .item-page__comment-button:hover {
     filter: brightness(0.9);
+}
+
+/* コメントのフォームのエラー */
+.item-page__comment-error {
+    color: var(--error-color);
+    font-size: var(--font-size-2xl);
+}
+
+.item-page__purchase-info {
+    display: inline-block;
 }
 
 @media screen and (max-width: 1400px) {
@@ -1229,6 +1252,11 @@ body {
     filter: brightness(0.9);
 }
 
+.address-page__error {
+    color: var(--error-color);
+    font-size: var(--font-size-2xl);
+}
+
 @media screen and (max-width: 768px) {
     /* ページ */
     .address-page {
@@ -1273,7 +1301,7 @@ body {
 }
 /* セクションのタイトル */
 .create-form__section-title {
-    font-size: var(--font-size-xl);
+    font-size: var(--font-size-3xl);
     font-weight: bold;
     margin-bottom: 2rem;
 }
@@ -1300,8 +1328,9 @@ body {
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: auto;
     object-fit: contain;
+    max-height: 200px;
 }
 /* 画像のプレビューのボタン */
 .create-form__image-select {
@@ -1340,7 +1369,7 @@ body {
 }
 /* カテゴリのラベル */
 .create-form__label {
-    font-size: var(--font-size-base);
+    font-size: var(--font-size-2xl);
     font-weight: bold;
     margin-bottom: 1rem;
     display: block;
@@ -1412,6 +1441,11 @@ body {
     filter: brightness(0.9);
 }
 
+.create-form__error {
+    color: var(--error-color);
+    font-size: var(--font-size-2xl);
+}
+
 /* ---- 商品購入ページ ---- */
 .purchase-page {
     height: 100%;
@@ -1439,20 +1473,25 @@ body {
 }
 /* 商品の画像 */
 .purchase-page__item-image {
-    width: 160px;
+    width: 160;
     height: 160px;
     background-color: var(--background-color-dark);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-shrink: 0;
 }
+
+.purchase-page__item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 /* 商品の情報 */
 .purchase-page__item-info {
     flex: 1;
 }
 /* 商品の名前 */
 .purchase-page__item-name {
-    font-size: var(--font-size-xl);
+    font-size: var(--font-size-3xl);
     font-weight: bold;
     margin-bottom: 1rem;
 }
@@ -1463,8 +1502,15 @@ body {
 }
 /* セクション */
 .purchase-page__section {
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border-color);
 }
+
+.purchase-page__main .purchase-page__section:last-of-type {
+    border-bottom: none;
+}
+
 /* セクションのヘッダー */
 .purchase-page__section-header {
     display: flex;
@@ -1477,22 +1523,27 @@ body {
     font-size: var(--font-size-xl);
     font-weight: bold;
     margin-bottom: 0;
-    margin-left: 3rem;
 }
 /* 住所変更 */
 .purchase-page__address-change {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
     color: var(--third-color);
     text-decoration: none;
     font-size: var(--font-size-xl);
 }
 /* 支払い方法 */
 .purchase-page__select-wrapper {
-    padding-left: 5rem;
+    padding: 1.5rem 0rem 1.5rem 6rem;
 }
 /* 支払い方法の選択 */
 .purchase-page__select {
-    width: 50%;
-    padding: 1.2rem;
+    width: 100%;
+    max-width: 320px;
+    padding: 1.5rem;
     border: 1px solid var(--border-color);
     border-radius: 4px;
     font-size: var(--font-size-base);
@@ -1501,13 +1552,12 @@ body {
 }
 /* 配送先 */
 .purchase-page__address-wrapper {
-    padding-left: 3rem;
 }
 /* 配送先の住所 */
 .purchase-page__address {
     background-color: var(--background-color);
     border-radius: 4px;
-    padding: 1.5rem;
+    padding: 1.5rem 0rem 1.5rem 6rem;
     margin-top: 1rem;
 }
 /* 配送先の住所のテキスト */
@@ -1515,6 +1565,7 @@ body {
     font-size: var(--font-size-xl);
     margin-bottom: 0.5rem;
     color: var(--text-color);
+    word-break: break-all;
 }
 /* 配送先の住所のテキストの最後の子要素 */
 .purchase-page__address p:last-child {
@@ -1522,7 +1573,7 @@ body {
 }
 /* サイドバー */
 .purchase-page__side {
-    width: 320px;
+    width: 440px;
     flex-shrink: 0;
     background: var(--background-color);
     border-radius: 4px;
@@ -1551,7 +1602,6 @@ body {
 }
 /* サイドバーのフォーム */
 .purchase-page__form {
-    width: 320px;
     margin-top: 4rem;
 }
 /* サイドバーのフォームのボタン */
@@ -1569,7 +1619,12 @@ body {
 }
 /* サイドバーのフォームのボタンのホバー */
 .purchase-page__button:hover {
-    background-color: var(--primary-color-dark);
+    filter: brightness(0.9);
+}
+
+.purchase-page__error {
+    color: var(--error-color);
+    font-size: var(--font-size-2xl);
 }
 
 @media screen and (max-width: 850px) {
@@ -1701,6 +1756,11 @@ body {
     filter: brightness(0.9);
 }
 
+.profile-edit__error {
+    color: var(--error-color);
+    font-size: var(--font-size-2xl);
+}
+
 /* ---- プロフィール表示ページ ---- */
 /* プロフィールヘッダー */
 .profile-header {
@@ -1720,6 +1780,19 @@ body {
     border-radius: 50%;
     background-color: var(--background-color-dark);
     flex-shrink: 0;
+    overflow: hidden;
+}
+
+.profile-header__avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-header__avatar-name {
+    display: flex;
+    align-items: center;
+    gap: 10rem;
 }
 
 .profile-header__info {
@@ -1804,6 +1877,7 @@ body {
     align-items: center;
     justify-content: center;
     color: #999;
+    overflow: hidden; /* ラベルがはみ出さないように */
 }
 
 .item-card-profile__image img {
@@ -1815,7 +1889,27 @@ body {
     object-fit: cover;
 }
 
+.item-card-profile__sold-label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(220, 53, 69, 0.9);
+    color: white;
+    padding: 10px 20px;
+    font-size: 24px;
+    font-weight: bold;
+    transform: rotate(-45deg) translate(-35px, -20px);
+    transform-origin: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+    border-top: 2px solid white;
+    border-bottom: 2px solid white;
+    text-align: center;
+    width: 200px;
+}
+
 .item-card-profile__title {
+    margin-top: 8px;
     font-size: var(--font-size-lg);
     margin: 0;
 }
@@ -1929,7 +2023,3 @@ body {
     }
 }
 
-/* 新しく追加したラッパーのスタイル */
-.item-page__purchase-info {
-    display: inline-block;
-}

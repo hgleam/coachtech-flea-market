@@ -12,9 +12,8 @@
             <div class='profile-edit__image'>
                 <div class='profile-edit__image-preview'>
                     <img id='profileImagePreview'
-                         src='{{ $user->profile_image_path ? asset("storage/" . $user->profile_image_path) : "https://placehold.co/200x200/e2e8f0/e2e8f0.png" }}'
-                         alt='プロフィール画像'
-                         onerror='this.onerror=null; this.src='https://placehold.co/200x200/e2e8f0/e2e8f0.png';'>
+                         src='{{ old("profile_image", $user->profile_image_path) ? asset("storage/" . $user->profile_image_path) : asset("images/default-avatar.png") }}'
+                         alt='プロフィール画像'>
                 </div>
                 <div class='profile-edit__image-select'>
                     <label class='profile-edit__image-button'>
@@ -54,9 +53,6 @@
             <div class='profile-edit__field'>
                 <label class='profile-edit__label'>建物名</label>
                 <input type='text' name='building' value='{{ old("building", $user->building) }}' class='profile-edit__input'>
-                @error('building')
-                <span class='profile-edit__error'>{{ $message }}</span>
-                @enderror
             </div>
 
             <button type='submit' class='profile-edit__submit'>
@@ -68,16 +64,34 @@
 
 @push('scripts')
 <script>
-    document.getElementById('profileImageInput').addEventListener('change', function(event) {
+// 画像のプレビュー
+document.addEventListener('DOMContentLoaded', function() {
+    // 画像のプレビューのボタン
+    const imageInput = document.getElementById('profileImageInput');
+    // 画像のプレビューの画像
+    const imagePreview = document.getElementById('profileImagePreview');
+    // 画像のプレビューの画像のデフォルト画像
+    const defaultAvatarUrl = "{{ asset('images/default-avatar.png') }}";
+
+    // 画像のプレビューの画像のデフォルト画像を表示する
+    imagePreview.addEventListener('error', function() {
+        this.src = defaultAvatarUrl;
+    });
+
+    // 画像のプレビューの画像を選択したら画像のプレビューの画像を表示する
+    imageInput.addEventListener('change', function(event) {
         const [file] = event.target.files;
         if (file) {
-            const preview = document.getElementById('profileImagePreview');
-            preview.src = URL.createObjectURL(file);
-            preview.onload = () => {
-                URL.revokeObjectURL(preview.src);
-            }
+            const reader = new FileReader();
+            // 画像のプレビューの画像を表示する
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+            };
+            // 画像のプレビューの画像を読み込む
+            reader.readAsDataURL(file);
         }
     });
+});
 </script>
 @endpush
 @endsection

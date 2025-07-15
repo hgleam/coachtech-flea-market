@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ExhibitionRequest;
 use App\Models\Category;
+use App\Enums\ItemCondition;
 use App\Models\Item;
 use Illuminate\Http\Request;
 use App\Http\Requests\CommentRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * 商品コントローラー
@@ -69,30 +71,33 @@ class ItemController extends Controller
     public function create()
     {
         $categories = Category::all();
-        return view('items.create', compact('categories'));
+        $conditions = ItemCondition::cases();
+        return view('items.create', compact('categories', 'conditions'));
     }
 
     /**
      * 新しい商品を保存します。
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\ExhibitionRequest  $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(ExhibitionRequest $request)
     {
-        $imagePath = $request->file('image')->store('images/items', 'public');
+        $input = $request->only(['name', 'description', 'price', 'condition', 'brand', 'categories', 'image']);
 
-        $items = $request->only('name', 'description', 'price', 'condition', 'brand', 'categories');
+        $imagePath = $request->file('image')->store('items', 'public');
 
-        Item::create([
+        $item = Item::create([
             'seller_id' => Auth::id(),
-            'name' => $items['name'],
-            'description' => $items['description'],
-            'price' => $items['price'],
-            'condition' => $items['condition'],
-            'brand_name' => $items['brand'],
+            'name' => $input['name'],
+            'description' => $input['description'],
+            'price' => $input['price'],
+            'condition' => $input['condition'],
+            'brand_name' => $input['brand'],
             'image_path' => $imagePath,
-        ])->categories()->attach($items['categories']);
+        ]);
+
+        $item->categories()->attach($input['categories']);
 
         return redirect()->route('items.index')->with('success', '商品を出品しました。');
     }

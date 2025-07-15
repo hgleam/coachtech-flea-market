@@ -12,10 +12,9 @@
                 <div class='profile-header__info'>
                     <div class='profile-header__avatar-name'>
                         <div class='profile-header__avatar'>
-                            <img src='{{ $user->profile_image_path ? asset('storage/' . $user->profile_image_path) : 'https://placehold.co/200x200/e2e8f0/e2e8f0.png' }}'
-                                 alt='プロフィール画像'
-                                 class='profile-header__avatar-img'
-                                 onerror="this.onerror=null; this.src='https://placehold.co/200x200/e2e8f0/e2e8f0.png';">
+                            <img id="profile-avatar" src='{{ $user->profile_image_path ? asset('storage/' . $user->profile_image_path) : asset('images/default-avatar.png') }}'
+                                alt='プロフィール画像'
+                                class='profile-header__avatar-img'>
                         </div>
                         <h2 class='profile-header__name'>{{ $user->name }}</h2>
                     </div>
@@ -35,8 +34,8 @@
                 <a href='{{ route("items.show", $item->id) }}' class='item-card-profile'>
                     <div class='item-card-profile__image'>
                         <img src='{{ asset("storage/" . $item->image_path) }}'
-                             alt='{{ $item->name }}'
-                             class='item-card-profile__image-img'>
+                            alt='{{ $item->name }}'
+                            class='item-card-profile__image-img'>
                     </div>
                     <h3 class='item-card-profile__title'>{{ $item->name }}</h3>
                 </a>
@@ -46,3 +45,22 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+// 画像のプレビュー
+document.addEventListener('DOMContentLoaded', function() {
+    // 画像のプレビューの画像
+    const avatarImage = document.getElementById('profile-avatar');
+    // 画像のプレビューの画像のデフォルト画像
+    const defaultAvatarUrl = "{{ asset('images/default-avatar.png') }}";
+
+    // 画像のプレビューの画像のデフォルト画像を表示する
+    if (avatarImage) {
+        avatarImage.addEventListener('error', function() {
+            this.src = defaultAvatarUrl;
+        });
+    }
+});
+</script>
+@endpush
