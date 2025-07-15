@@ -39,5 +39,5 @@ Route::middleware(['auth', 'profile.completed'])->group(function () {
 
     // 住所変更
     Route::get('/address/{item}/edit', [AddressController::class, 'edit'])->name('address.edit'); // 送付先住所編集画面
-    Route::post('/address/{item}/update', [AddressController::class, 'update'])->name('address.update'); // 送付先住所更新処理
+    Route::put('/address/{item}/update', [AddressController::class, 'update'])->name('address.update'); // 送付先住所更新処理
 });

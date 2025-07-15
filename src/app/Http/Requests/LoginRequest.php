@@ -33,4 +33,17 @@ class LoginRequest extends FortifyLoginRequest
             'password' => ['required', 'min:8'],
         ];
     }
+
+    /**
+     * バリデーションエラーメッセージのカスタマイズ
+     *
+     * @return array
+     */
+    public function attributes()
+    {
+        return [
+            'email' => 'メールアドレス',
+            'password' => 'パスワード',
+        ];
+    }
 }

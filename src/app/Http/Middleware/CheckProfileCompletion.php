@@ -27,8 +27,7 @@ class CheckProfileCompletion
         if (Auth::check() && !$isProfileRoute) {
             $profileIsIncomplete = empty($user->name) ||
                                    empty($user->zip_code) ||
-                                   empty($user->address) ||
-                                   empty($user->building);
+                                   empty($user->address);
 
             if ($profileIsIncomplete) {
                 return redirect()->route('profile.edit')->with('warning', 'プロフィール情報をすべて入力してください。');

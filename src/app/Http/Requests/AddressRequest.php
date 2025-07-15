@@ -26,7 +26,19 @@ class AddressRequest extends FormRequest
         return [
             'zip_code' => ['required', 'regex:/^\d{3}-\d{4}$/'],
             'address' => ['required'],
-            'building' => ['required'],
+        ];
+    }
+
+    /**
+     * バリデーションエラーメッセージのカスタマイズ
+     *
+     * @return array
+     */
+    public function attributes()
+    {
+        return [
+            'zip_code' => '郵便番号',
+            'address' => '住所',
         ];
     }
 }

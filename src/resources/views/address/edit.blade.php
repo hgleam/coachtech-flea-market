@@ -7,8 +7,9 @@
     <div class='address-page__body'>
         <h2 class='address-page__title'>住所の変更</h2>
 
-        <form method='POST' action='{{ route("address.update", $item) }}' class='address-page__form'>
+        <form method='POST' action='{{ route("address.update", $item) }}' class='address-page__form' novalidate>
             @csrf
+            @method('PUT')
             <div class='address-page__field'>
                 <label for='zip_code' class='address-page__label'>郵便番号</label>
                 <input type='text' name='zip_code' id='zip_code' class='address-page__input' value='{{ old("zip_code", $shippingAddress["zip_code"] ?? $user->zip_code) }}' required>

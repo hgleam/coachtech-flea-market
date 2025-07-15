@@ -19,7 +19,12 @@ class CreateNewUser implements CreatesNewUsers
     public function create(array $input): User
     {
         $registerRequest = new RegisterRequest();
-        $validator = Validator::make($input, $registerRequest->rules(), $registerRequest->messages());
+        $validator = Validator::make(
+            $input,
+            $registerRequest->rules(),
+            $registerRequest->messages(),
+            $registerRequest->attributes()
+        );
 
         $validated = $validator->validate();
 

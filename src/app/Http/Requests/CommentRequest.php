@@ -32,4 +32,16 @@ class CommentRequest extends FormRequest
             'comment' => ['required', 'string', 'max:255'],
         ];
     }
+
+    /**
+     * バリデーションエラーメッセージのカスタマイズ
+     *
+     * @return array
+     */
+    public function attributes()
+    {
+        return [
+            'comment' => 'コメント',
+        ];
+    }
 }

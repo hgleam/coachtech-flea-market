@@ -27,7 +27,7 @@ class AddressController extends Controller
     public function update(AddressRequest $request, Item $item)
     {
         $sessionKey = 'shipping_address_for_item_' . $item->id;
-        session([$sessionKey => $request->validated()]);
+        session([$sessionKey => $request->only('zip_code', 'address', 'building')]);
 
         return redirect()->route('purchase.create', $item)->with('status', '配送先住所を設定しました。');
     }

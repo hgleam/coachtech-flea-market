@@ -30,9 +30,36 @@ class RegisterRequest extends FormRequest
     {
         return [
             'username' => ['required'],
-            'email' => ['required'],
+            'email' => ['required', 'email'],
             'password' => ['required', 'min:8'],
-            'password_confirmation' => ['required', 'same:password'],
+            'password_confirmation' => ['required', 'min:8', 'same:password'],
+        ];
+    }
+
+    /**
+     * バリデーションエラーメッセージのカスタマイズ
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'password_confirmation.same' => 'パスワードと一致しません',
+        ];
+    }
+
+    /**
+     * バリデーションエラーメッセージのカスタマイズ
+     *
+     * @return array
+     */
+    public function attributes()
+    {
+        return [
+            'username' => 'ユーザー名',
+            'email' => 'メールアドレス',
+            'password' => 'パスワード',
+            'password_confirmation' => '確認用パスワード',
         ];
     }
 }

@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class PurchaseRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * 認証
      *
      * @return bool
      */
@@ -17,17 +17,26 @@ class PurchaseRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * バリデーションルール
      *
      * @return array
      */
     public function rules()
     {
         return [
-            // 'payment_method' => 'required',
-            // 'zip_code' => 'required',
-            // 'address' => 'required',
-            // 'building' => 'required',
+            'payment_method' => ['required'],
+        ];
+    }
+
+    /**
+     * バリデーションエラーメッセージのカスタマイズ
+     *
+     * @return array
+     */
+    public function attributes()
+    {
+        return [
+            'payment_method' => '支払い方法',
         ];
     }
 }

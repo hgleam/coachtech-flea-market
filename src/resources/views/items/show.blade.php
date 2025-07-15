@@ -105,11 +105,11 @@
                     <form action='{{ route("items.comments.store", $item) }}' method='POST'>
                         @csrf
                         <textarea class='item-page__comment-input' name='comment' value='{{ old("comment") }}' placeholder='コメントを入力してください'></textarea>
+                        @error('comment')
+                        <p class='item-page__comment-error '>{{ $message }}</p>
+                        @enderror
                         <button type='submit' class='item-page__comment-button'>コメントを送信する</button>
                     </form>
-                    @error('comment')
-                        <p class='item-page__comment-error'>{{ $message }}</p>
-                    @enderror
                 </div>
             </div>
         </div>

@@ -38,7 +38,7 @@ return [
     'digits_between'       => ':attributeは、:min桁から:max桁にしてください。',
     'dimensions'           => ':attributeの画像サイズが無効です',
     'distinct'             => ':attributeの値が重複しています。',
-    'email'                => ':attributeは、有効なメールアドレス形式で指定してください。',
+    'email'                => ':attributeの形式が不正です',
     'ends_with'            => ':attributeは、次のうちのいずれかで終わらなければなりません。: :values',
     'exists'               => '選択された:attributeは、有効ではありません。',
     'file'                 => ':attributeはファイルでなければいけません。',
@@ -58,7 +58,7 @@ return [
     'image'                => ':attributeには、画像を指定してください。',
     'in'                   => '選択された:attributeは、有効ではありません。',
     'in_array'             => ':attributeが:otherに存在しません。',
-    'integer'              => ':attributeには、整数を指定してください。',
+    'integer'              => ':attributeは半角数字で入力してください',
     'ip'                   => ':attributeには、有効なIPアドレスを指定してください。',
     'ipv4'                 => ':attributeはIPv4アドレスを指定してください。',
     'ipv6'                 => ':attributeはIPv6アドレスを指定してください。',
@@ -78,15 +78,15 @@ return [
     'max'                  => [
         'numeric' => ':attributeには、:max以下の数字を指定してください。',
         'file'    => ':attributeには、:max KB以下のファイルを指定してください。',
-        'string'  => ':attributeは、:max文字以下にしてください。',
+        'string'  => ':attributeは:max文字以下で入力してください',
         'array'   => ':attributeの項目は、:max個以下にしてください。',
     ],
-    'mimes'                => ':attributeには、:valuesタイプのファイルを指定してください。',
-    'mimetypes'            => ':attributeには、:valuesタイプのファイルを指定してください。',
+    'mimes'                => ':attributeは:valuesタイプのファイルを選択してください',
+    'mimetypes'            => ':attributeは:valuesタイプのファイルを選択してください',
     'min'                  => [
-        'numeric' => ':attributeには、:min以上の数字を指定してください。',
+        'numeric' => ':attributeは:min以上の半角数字を入力してください',
         'file'    => ':attributeには、:min KB以上のファイルを指定してください。',
-        'string'  => ':attributeは、:min文字以上にしてください。',
+        'string'  => ':attributeは:min文字以上で入力してください',
         'array'   => ':attributeの項目は、:min個以上にしてください。',
     ],
     'multiple_of'          => 'The :attribute must be a multiple of :value',
@@ -130,8 +130,14 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        // 'attribute-name' => [
+        //     'rule-name' => 'custom-message',
+        // ],
+        'zip_code' => [
+            'regex' => ':attributeはハイフンありの8桁で入力してください',
+        ],
+        'payment_method' => [
+            'required' => ':attributeを選択してください',
         ],
     ],
 
@@ -147,11 +153,5 @@ return [
     */
 
     'attributes' => [
-        'email' => 'メールアドレス',
-        'password' => 'パスワード',
-        'username' => 'ユーザー名',
-        'password_confirmation' => '確認用パスワード',
-
-        'profile_image' => 'プロフィール画像',
     ],
 ];

@@ -33,4 +33,16 @@ class ExhibitionRequest extends FormRequest
             'price' => ['required', 'integer', 'min:0'],
         ];
     }
+
+    public function attributes()
+    {
+        return [
+            'name' => '商品名',
+            'description' => '商品の説明',
+            'image' => '商品画像',
+            'categories' => '商品のカテゴリー',
+            'condition' => '商品の状態',
+            'price' => '販売価格',
+        ];
+    }
 }
