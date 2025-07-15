@@ -4,8 +4,8 @@
 <div class='profile-page'>
     <div class='profile-page__body'>
         <div class='profile-tabs'>
-            <a href='{{ route("items.index", ["keyword" => $keyword]) }}' class='profile-tabs__item {{ $page !== "mylist" ? "profile-tabs__item--active" : "" }}'>おすすめ</a>
-            <a href='{{ route("items.index", ["page" => "mylist", "keyword" => $keyword]) }}' class='profile-tabs__item {{ $page === "mylist" ? "profile-tabs__item--active" : "" }}'>マイリスト</a>
+            <a href='{{ route("items.index", ["keyword" => $keyword]) }}' class='profile-tabs__item {{ $tab !== "mylist" ? "profile-tabs__item--active" : "" }}'>おすすめ</a>
+            <a href='{{ route("items.index", ["tab" => "mylist", "keyword" => $keyword]) }}' class='profile-tabs__item {{ $tab === "mylist" ? "profile-tabs__item--active" : "" }}'>マイリスト</a>
         </div>
 
         <div class='profile-items'>

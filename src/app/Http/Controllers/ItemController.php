@@ -24,13 +24,13 @@ class ItemController extends Controller
      */
     public function index(Request $request)
     {
-        $page = $request->input('page', 'all');
+        $tab = $request->input('tab', 'all');
         $keyword = $request->input('keyword');
 
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        $baseQuery = match ($page) {
+        $baseQuery = match ($tab) {
             'mylist' => Auth::check()
                 ? $user->likedItems()
                 : Item::whereRaw('false'), // 未ログイン時は空のクエリ
@@ -46,7 +46,7 @@ class ItemController extends Controller
 
         $items = $itemsQuery->with('order')->get();
 
-        return view('items.index', compact('items', 'page', 'keyword'));
+        return view('items.index', compact('items', 'tab', 'keyword'));
     }
 
     /**
