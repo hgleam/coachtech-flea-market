@@ -136,9 +136,6 @@ return [
         'zip_code' => [
             'regex' => ':attributeはハイフンありの8桁で入力してください',
         ],
-        'payment_method' => [
-            'required' => ':attributeを選択してください',
-        ],
     ],
 
     /*

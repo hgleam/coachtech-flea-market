@@ -34,6 +34,11 @@ class ExhibitionRequest extends FormRequest
         ];
     }
 
+    /**
+     * バリデーションエラーメッセージのカスタマイズ
+     *
+     * @return array
+     */
     public function attributes()
     {
         return [
