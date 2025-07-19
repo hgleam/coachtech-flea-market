@@ -40,4 +40,9 @@ services:
     depends_on:
       - mysql
     ports:
-      - 8080:80
+      - 8080:80  mailhog:
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "8025:8025" # MailHog Web UI
+      - "1025:1025" # SMTP Port

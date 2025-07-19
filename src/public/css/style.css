@@ -1141,6 +1141,7 @@ body {
 .verify-form__group {
     width: 100%;
     max-width: 320px;
+    padding-top: 4rem;
 }
 /* フォームのボタン */
 .verify-form__button {

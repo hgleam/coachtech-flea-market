@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\RegisterRequest;
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Routing\Controller;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
-use Laravel\Fortify\Contracts\RegisterResponse;
 
 /**
  * 新規登録コントローラー
@@ -17,11 +19,8 @@ class RegisteredUserController extends Controller
 {
     /**
      * 新規登録画面を表示
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Contracts\View\View
      */
-    public function create(Request $request)
+    public function create(): View
     {
         return view('auth.register');
     }
@@ -29,14 +28,18 @@ class RegisteredUserController extends Controller
     /**
      * 新規登録処理
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\RegisterRequest  $request
      * @param  \Laravel\Fortify\Contracts\CreatesNewUsers  $creator
-     * @return \Laravel\Fortify\Contracts\RegisterResponse
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request, CreatesNewUsers $creator): RegisterResponse
+    public function store(RegisterRequest $request, CreatesNewUsers $creator): RedirectResponse
     {
-        event(new Registered($user = $creator->create($request->all())));
+        $user = $request->only(['username', 'email', 'password', 'password_confirmation']);
 
-        return app(RegisterResponse::class);
+        event(new Registered($user = $creator->create($user)));
+
+        Auth::login($user);
+
+        return redirect()->intended(config('fortify.home'));
     }
 }

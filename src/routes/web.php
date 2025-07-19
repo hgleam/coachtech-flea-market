@@ -5,6 +5,11 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\Auth\VerificationController;
+use App\Http\Controllers\Auth\RegisteredUserController;
+use Laravel\Fortify\Http\Controllers\EmailVerificationNotificationController;
+use Laravel\Fortify\Http\Controllers\EmailVerificationPromptController;
+use Laravel\Fortify\Http\Controllers\VerifyEmailController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,10 +22,23 @@ use App\Http\Controllers\PurchaseController;
 |
 */
 
-Route::get('/', [ItemController::class, 'index'])->name('items.index')->middleware('profile.completed'); // 商品一覧画面
-Route::get('/item/{item}', [ItemController::class, 'show'])->name('items.show')->middleware('profile.completed'); // 商品詳細画面
+Route::get('/', [ItemController::class, 'index'])->name('items.index')->middleware(['auth', 'verified', 'profile.completed']); // 商品一覧画面
+Route::get('/item/{item}', [ItemController::class, 'show'])->name('items.show')->middleware(['auth', 'verified', 'profile.completed']); // 商品詳細画面
 
-Route::middleware(['auth', 'profile.completed'])->group(function () {
+Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
+Route::post('/register', [RegisteredUserController::class, 'store']);
+
+// メール認証関連
+Route::get('/email/verify', [EmailVerificationPromptController::class, '__invoke'])
+    ->middleware('auth')->name('verification.notice'); // メール認証画面
+
+Route::get('/email/verify/{id}/{hash}', [VerifyEmailController::class, '__invoke'])
+    ->middleware(['auth', 'signed', 'throttle:6,1'])->name('verification.verify'); // メール認証処理
+
+Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
+    ->middleware(['auth', 'throttle:6,1'])->name('verification.send'); // メール認証通知送信
+
+Route::middleware(['auth', 'verified', 'profile.completed'])->group(function () {
     Route::post('/item/{item}/comments', [ItemController::class, 'storeComment'])->name('items.comments.store'); // 商品コメント投稿
 
     // プロフィール
