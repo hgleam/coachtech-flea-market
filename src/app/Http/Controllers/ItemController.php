@@ -83,7 +83,7 @@ class ItemController extends Controller
      */
     public function store(ExhibitionRequest $request)
     {
-        $input = $request->only(['name', 'description', 'price', 'condition', 'brand', 'categories', 'image']);
+        $input = $request->only(['name', 'description', 'price', 'condition', 'brand_name', 'categories', 'image']);
 
         $imagePath = $request->file('image')->store('items', 'public');
 
@@ -93,7 +93,7 @@ class ItemController extends Controller
             'description' => $input['description'],
             'price' => $input['price'],
             'condition' => $input['condition'],
-            'brand_name' => $input['brand'],
+            'brand_name' => $input['brand_name'],
             'image_path' => $imagePath,
         ]);
 

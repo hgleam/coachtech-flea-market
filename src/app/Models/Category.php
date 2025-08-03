@@ -20,7 +20,9 @@ class Category extends Model
      *
      * @var array
      */
-    protected $fillable = ['name'];
+    protected $fillable = [
+        'name',
+    ];
 
     /**
      * このカテゴリーに属する商品を取得します。

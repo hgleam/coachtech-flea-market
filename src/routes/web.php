@@ -22,7 +22,7 @@ use Laravel\Fortify\Http\Controllers\VerifyEmailController;
 |
 */
 
-Route::get('/', [ItemController::class, 'index'])->name('items.index')->middleware(['auth', 'verified', 'profile.completed']); // 商品一覧画面
+Route::get('/', [ItemController::class, 'index'])->name('items.index'); // 商品一覧画面
 Route::get('/item/{item}', [ItemController::class, 'show'])->name('items.show')->middleware(['auth', 'verified', 'profile.completed']); // 商品詳細画面
 
 Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');

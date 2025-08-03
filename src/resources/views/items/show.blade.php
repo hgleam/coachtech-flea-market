@@ -15,7 +15,7 @@
 
         <div class='item-page__info-container'>
             <h1 class='item-page__title'>{{ $item->name }}</h1>
-            <p class='item-page__brand'>{{ $item->brand }}</p>
+            <p class='item-page__brand'>{{ $item->brand_name }}</p>
 
             <div class='item-page__purchase-info'>
                 <p class='item-page__price'>

@@ -83,4 +83,14 @@ class Item extends Model
     {
         return $this->belongsToMany(Category::class, 'item_categories');
     }
+
+    /**
+     * この商品の出品者情報を取得します。
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function seller(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'seller_id');
+    }
 }

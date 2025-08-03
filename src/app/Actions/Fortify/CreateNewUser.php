@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
+use Illuminate\Auth\Events\Registered;
 
 class CreateNewUser implements CreatesNewUsers
 {
@@ -28,10 +29,14 @@ class CreateNewUser implements CreatesNewUsers
 
         $validated = $validator->validate();
 
-        return User::create([
+        $user = User::create([
             'name' => $validated['username'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
         ]);
+
+        event(new Registered($user));
+
+        return $user;
     }
 }

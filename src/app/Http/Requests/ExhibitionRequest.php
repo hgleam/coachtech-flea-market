@@ -30,6 +30,7 @@ class ExhibitionRequest extends FormRequest
             'categories' => ['required', 'array'],
             'categories.*' => ['required', 'integer', 'exists:categories,id'],
             'condition' => ['required', 'string'],
+            'brand_name' => ['nullable', 'string'],
             'price' => ['required', 'integer', 'min:0'],
         ];
     }
@@ -47,6 +48,7 @@ class ExhibitionRequest extends FormRequest
             'image' => '商品画像',
             'categories' => '商品のカテゴリー',
             'condition' => '商品の状態',
+            'brand_name' => 'ブランド名',
             'price' => '販売価格',
         ];
     }
