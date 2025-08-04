@@ -20,6 +20,10 @@ class PurchaseController extends Controller
      */
     public function create(Item $item)
     {
+        if (!is_null($item->buyer_id)) {
+            return redirect()->route('items.show', $item)->with('error', 'この商品は既に購入されています');
+        }
+
         $sessionKey = 'shipping_address_for_item_' . $item->id;
         $shippingAddress = session($sessionKey);
 
@@ -35,6 +39,9 @@ class PurchaseController extends Controller
      */
     public function store(PurchaseRequest $request, Item $item)
     {
+        if (!is_null($item->buyer_id)) {
+            return redirect()->route('items.show', $item)->with('error', 'この商品は既に購入されています');
+        }
         try {
             DB::transaction(function () use ($request, $item) {
                 // 購入商品を作成
@@ -43,6 +50,9 @@ class PurchaseController extends Controller
                     'buyer_id' => Auth::id(),
                     'payment_method' => $request->payment_method,
                 ]);
+
+                // 商品に購入者IDをセット
+                $item->update(['buyer_id' => Auth::id()]);
 
                 // 配送先住所を保存
                 $sessionKey = 'shipping_address_for_item_' . $item->id;

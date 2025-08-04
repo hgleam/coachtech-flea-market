@@ -578,6 +578,24 @@ body {
     display: flex;
     gap: 6rem;
 }
+
+/* アラート */
+.item-page__alert {
+    padding: 1rem;
+    margin-bottom: 2rem;
+    border-radius: 4px;
+    font-size: var(--font-size-2xl);
+    font-weight: bold;
+    text-align: center;
+}
+
+/* アラートのエラー */
+.item-page__alert--danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+}
+
 /* 画像コンテナ */
 .item-page__image-container {
     width: 45%;
@@ -683,6 +701,16 @@ body {
 .item-page__button:hover {
     cursor: pointer;
     filter: brightness(0.9);
+}
+
+/* 売り切れボタン */
+.item-page__button--sold-out {
+    background: #888888;
+    cursor: not-allowed;
+}
+/* 売り切れボタンのホバー */
+.item-page__button--sold-out:hover {
+    filter: none;
 }
 
 /* セクション */
@@ -2023,4 +2051,5 @@ body {
         font-weight: bold;
     }
 }
+
 

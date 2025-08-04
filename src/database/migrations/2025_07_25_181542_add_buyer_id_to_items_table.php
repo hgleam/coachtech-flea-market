@@ -14,7 +14,7 @@ class AddBuyerIdToItemsTable extends Migration
     public function up()
     {
         Schema::table('items', function (Blueprint $table) {
-            //
+            $table->foreignId('buyer_id')->nullable()->constrained('users')->onDelete('set null');
         });
     }
 
@@ -26,7 +26,8 @@ class AddBuyerIdToItemsTable extends Migration
     public function down()
     {
         Schema::table('items', function (Blueprint $table) {
-            //
+            $table->dropForeign(['buyer_id']);
+            $table->dropColumn('buyer_id');
         });
     }
 }

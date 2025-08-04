@@ -4,6 +4,11 @@
 
 @section('content')
 <div class='item-page'>
+    @if (session('error'))
+        <div class='item-page__alert item-page__alert--danger'>
+            {{ session('error') }}
+        </div>
+    @endif
     <div class='item-page__body'>
         <div class='item-page__image-container'>
             <div class='item-page__image'>
@@ -57,7 +62,11 @@
                 </div>
             </div>
 
-            <a href='{{ route("purchase.create", $item) }}' class='item-page__button'>購入手続きへ</a>
+            @if(!$is_sold)
+                <a href='{{ route("purchase.create", $item) }}' class='item-page__button'>購入手続きへ</a>
+            @else
+                <div class='item-page__button item-page__button--sold-out'>売り切れ</div>
+            @endif
 
             <div class='item-page__section'>
                 <h2 class='item-page__section-title'>商品説明</h2>

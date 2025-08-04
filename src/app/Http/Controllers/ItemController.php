@@ -60,7 +60,8 @@ class ItemController extends Controller
     public function show($id)
     {
         $item = Item::with(['comments.user', 'categories', 'likedByUsers'])->findOrFail($id);
-        return view('items.show', compact('item'));
+        $is_sold = !is_null($item->buyer_id);
+        return view('items.show', compact('item', 'is_sold'));
     }
 
     /**

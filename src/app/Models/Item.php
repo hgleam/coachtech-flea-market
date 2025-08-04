@@ -27,6 +27,7 @@ class Item extends Model
      */
     protected $fillable = [
         'seller_id',
+        'buyer_id',
         'condition',
         'name',
         'brand_name',
@@ -92,5 +93,15 @@ class Item extends Model
     public function seller(): BelongsTo
     {
         return $this->belongsTo(User::class, 'seller_id');
+    }
+
+    /**
+     * この商品の購入者情報を取得します。
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function buyer(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'buyer_id');
     }
 }
