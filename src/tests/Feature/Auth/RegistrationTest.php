@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Validation\ValidationException;
 use Tests\TestCase;
 use App\Models\User;
+use App\Providers\RouteServiceProvider;
 
 /**
  * 会員登録のテスト
@@ -127,7 +128,7 @@ class RegistrationTest extends TestCase
                 'password_confirmation' => 'password',
             ]);
 
-        $response->assertRedirect('/');
+        $response->assertRedirect(RouteServiceProvider::HOME);
         $this->assertAuthenticated();
         $this->assertDatabaseHas('users', [
             'email' => 'test@example.com',

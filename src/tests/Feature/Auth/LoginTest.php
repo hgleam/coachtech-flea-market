@@ -5,6 +5,7 @@ namespace Tests\Feature\Auth;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use App\Models\User;
+use App\Providers\RouteServiceProvider;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -87,7 +88,7 @@ class LoginTest extends TestCase
                 'password' => 'password',
             ]);
 
-        $response->assertRedirect('/');
+        $response->assertRedirect(RouteServiceProvider::HOME);
         $this->assertAuthenticatedAs($user);
     }
 }
