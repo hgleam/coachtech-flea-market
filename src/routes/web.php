@@ -5,8 +5,6 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\PurchaseController;
-use App\Http\Controllers\Auth\VerificationController;
-use App\Http\Controllers\Auth\RegisteredUserController;
 use Laravel\Fortify\Http\Controllers\EmailVerificationNotificationController;
 use Laravel\Fortify\Http\Controllers\EmailVerificationPromptController;
 use Laravel\Fortify\Http\Controllers\VerifyEmailController;
@@ -24,9 +22,6 @@ use Laravel\Fortify\Http\Controllers\VerifyEmailController;
 
 Route::get('/', [ItemController::class, 'index'])->name('items.index'); // 商品一覧画面
 Route::get('/item/{item}', [ItemController::class, 'show'])->name('items.show')->middleware(['auth', 'verified', 'profile.completed']); // 商品詳細画面
-
-Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
-Route::post('/register', [RegisteredUserController::class, 'store']);
 
 // メール認証関連
 Route::get('/email/verify', [EmailVerificationPromptController::class, '__invoke'])
