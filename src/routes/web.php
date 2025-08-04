@@ -21,7 +21,7 @@ use Laravel\Fortify\Http\Controllers\VerifyEmailController;
 */
 
 Route::get('/', [ItemController::class, 'index'])->name('items.index'); // 商品一覧画面
-Route::get('/item/{item}', [ItemController::class, 'show'])->name('items.show')->middleware(['auth', 'verified', 'profile.completed']); // 商品詳細画面
+Route::get('/item/{item}', [ItemController::class, 'show'])->name('items.show'); // 商品詳細画面
 
 // メール認証関連
 Route::get('/email/verify', [EmailVerificationPromptController::class, '__invoke'])
@@ -33,24 +33,26 @@ Route::get('/email/verify/{id}/{hash}', [VerifyEmailController::class, '__invoke
 Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
     ->middleware(['auth', 'throttle:6,1'])->name('verification.send'); // メール認証通知送信
 
-Route::middleware(['auth', 'verified', 'profile.completed'])->group(function () {
-    Route::post('/item/{item}/comments', [ItemController::class, 'storeComment'])->name('items.comments.store'); // 商品コメント投稿
+Route::middleware(['verified', 'profile.completed'])->group(function () {
+    Route::middleware('auth')->group(function () {
+        Route::post('/item/{item}/comments', [ItemController::class, 'storeComment'])->name('items.comments.store'); // 商品コメント投稿
 
-    // プロフィール
-    Route::get('/mypage', [ProfileController::class, 'show'])->name('profile.show'); // プロフィール画面
-    Route::get('/mypage/profile', [ProfileController::class, 'edit'])->name('profile.edit'); // プロフィール編集画面
-    Route::put('/mypage/profile', [ProfileController::class, 'update'])->name('profile.update'); // プロフィール更新
+        // プロフィール
+        Route::get('/mypage', [ProfileController::class, 'show'])->name('profile.show'); // プロフィール画面
+        Route::get('/mypage/profile', [ProfileController::class, 'edit'])->name('profile.edit'); // プロフィール編集画面
+        Route::put('/mypage/profile', [ProfileController::class, 'update'])->name('profile.update'); // プロフィール更新
 
-    // 商品表示、出品
-    Route::get('/sell', [ItemController::class, 'create'])->name('items.create'); // 商品出品画面
-    Route::post('/sell', [ItemController::class, 'store'])->name('items.store'); // 商品出品処理
-    Route::post('/item/{item}/like', [ItemController::class, 'toggleLike'])->name('items.toggle_like'); // 商品いいね、いいね解除処理
+        // 商品表示、出品
+        Route::get('/sell', [ItemController::class, 'create'])->name('items.create'); // 商品出品画面
+        Route::post('/sell', [ItemController::class, 'store'])->name('items.store'); // 商品出品処理
+        Route::post('/item/{item}/like', [ItemController::class, 'toggleLike'])->name('items.toggle_like'); // 商品いいね、いいね解除処理
 
-    // 商品購入
-    Route::get('/purchase/{item}', [PurchaseController::class, 'create'])->name('purchase.create'); // 商品購入画面
-    Route::post('/purchase/{item}', [PurchaseController::class, 'store'])->name('purchase.store'); // 商品購入処理
+        // 商品購入
+        Route::get('/purchase/{item}', [PurchaseController::class, 'create'])->name('purchase.create'); // 商品購入画面
+        Route::post('/purchase/{item}', [PurchaseController::class, 'store'])->name('purchase.store'); // 商品購入処理
 
-    // 住所変更
-    Route::get('/purchase/address/{item}', [AddressController::class, 'edit'])->name('address.edit'); // 送付先住所編集画面
-    Route::put('/purchase/address/{item}', [AddressController::class, 'update'])->name('address.update'); // 送付先住所更新処理
+        // 住所変更
+        Route::get('/purchase/address/{item}', [AddressController::class, 'edit'])->name('address.edit'); // 送付先住所編集画面
+        Route::put('/purchase/address/{item}', [AddressController::class, 'update'])->name('address.update'); // 送付先住所更新処理
+    });
 });
