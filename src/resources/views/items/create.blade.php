@@ -69,7 +69,7 @@
 
                 <div class='create-form__field'>
                     <label class='create-form__label'>ブランド名</label>
-                    <input type='text' name='brand' class='create-form__input' value='{{ old("brand") }}'>
+                    <input type='text' name='brand_name' class='create-form__input' value='{{ old("brand") }}'>
                 </div>
 
                 <div class='create-form__field'>
