@@ -16,6 +16,8 @@ services:
     build: ./docker/php
     volumes:
       - ./src:/var/www/
+    depends_on:
+      - mysql
 
   mysql:
     image: mysql:8.0.26
