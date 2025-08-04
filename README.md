@@ -4,7 +4,7 @@
 
 ## ✨ 機能一覧
 
-- 会員登録、ログイン・ログアウト機能
+- 会員登録(メール認証)、ログイン・ログアウト機能
 - プロフィール編集機能（アバター画像、ユーザー名、住所など）
 - 商品一覧表示、検索機能
 - 商品出品機能
@@ -49,6 +49,9 @@
    # MYSQL_DATABASE → .envのDB_DATABASE
    # MYSQL_USER → .envのDB_USERNAME
    # MYSQL_PASSWORD → .envのDB_PASSWORD
+   # MAIL_HOST → mailhogのサービス名を設定
+   # MAIL_FROM_ADDRESS → メールアドレスを設定(例：test@example.com)
+   # MAIL_FROM_NAME → メールアドレスの名前を設定(例：Coachtech Flea Market)
    ```
 3. **Dockerコンテナのビルドと起動**
 
@@ -84,6 +87,9 @@
 
    - アプリケーション: [http://localhost:81](http://localhost:81)
    - phpMyAdmin: [http://localhost:8080](http://localhost:8080)
+   - MailHog (メール確認用): [http://localhost:8025](http://localhost:8025)
+
+   MailHogは開発用のメールサーバーです。会員登録時の認証メールなどは、実際のメールボックスではなくMailHogのWeb UIに届きますので、こちらでご確認ください。
 
 ### テスト用アカウント
 
