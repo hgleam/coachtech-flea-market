@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ItemStatus;
 use App\Models\Item;
 use App\Http\Requests\PurchaseRequest;
 use App\Models\Order;
@@ -51,8 +52,11 @@ class PurchaseController extends Controller
                     'payment_method' => $request->payment_method,
                 ]);
 
-                // 商品に購入者IDをセット
-                $item->update(['buyer_id' => Auth::id()]);
+                // 商品に購入者IDをセットし、取引状態を「取引中」に設定
+                $item->update([
+                    'buyer_id' => Auth::id(),
+                    'status' => ItemStatus::TRADING->value,
+                ]);
 
                 // 配送先住所を保存
                 $sessionKey = 'shipping_address_for_item_' . $item->id;

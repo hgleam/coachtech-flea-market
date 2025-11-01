@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\TradeChatController;
 use Laravel\Fortify\Http\Controllers\EmailVerificationNotificationController;
 use Laravel\Fortify\Http\Controllers\EmailVerificationPromptController;
 use Laravel\Fortify\Http\Controllers\VerifyEmailController;
@@ -54,5 +55,13 @@ Route::middleware(['verified', 'profile.completed'])->group(function () {
         // 住所変更
         Route::get('/purchase/address/{item}', [AddressController::class, 'edit'])->name('address.edit'); // 送付先住所編集画面
         Route::put('/purchase/address/{item}', [AddressController::class, 'update'])->name('address.update'); // 送付先住所更新処理
+
+        // 取引チャット
+        Route::get('/trade/chat/{item}', [TradeChatController::class, 'show'])->name('trade.chat'); // 取引チャット画面
+        Route::post('/trade/chat/{item}/message', [TradeChatController::class, 'storeMessage'])->name('trade.message.store'); // メッセージ送信
+        Route::put('/trade/chat/{item}/message/{message}', [TradeChatController::class, 'updateMessage'])->name('trade.message.update'); // メッセージ更新
+        Route::delete('/trade/chat/{item}/message/{message}', [TradeChatController::class, 'destroyMessage'])->name('trade.message.destroy'); // メッセージ削除
+        Route::post('/trade/chat/{item}/complete', [TradeChatController::class, 'completeTrade'])->name('trade.complete'); // 取引完了
+        Route::post('/trade/chat/{item}/evaluation', [TradeChatController::class, 'storeEvaluation'])->name('trade.evaluation.store'); // 評価送信
     });
 });

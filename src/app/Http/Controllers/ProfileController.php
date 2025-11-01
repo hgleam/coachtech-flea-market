@@ -28,10 +28,11 @@ class ProfileController extends Controller
 
         $items = match ($page) {
             'buy' => $user->purchasedItems,
+            'trading' => $user->getTradingItemsSortedByLatestMessage(),
             default => $user->soldItems,
         };
 
-        return view('profile.show', compact('user', 'items'));
+        return view('profile.show', compact('user', 'items', 'page'));
     }
 
     /**

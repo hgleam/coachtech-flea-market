@@ -16,7 +16,10 @@
                                 alt='プロフィール画像'
                                 class='profile-header__avatar-img'>
                         </div>
+                        <div class='profile-header__name-rating'>
                         <h2 class='profile-header__name'>{{ $user->name }}</h2>
+                            <x-star-rating :rating="$user->averageRating" />
+                        </div>
                     </div>
                     <a href='{{ route("profile.edit") }}' class='profile-header__edit-button'>プロフィールを編集</a>
                 </div>
@@ -26,13 +29,26 @@
         <div class='profile-tabs'>
             <a href='{{ route("profile.show", ["page" => "sell"]) }}' class='profile-tabs__item {{ $page === "sell" ? "profile-tabs__item--active" : "" }}'>出品した商品</a>
             <a href='{{ route("profile.show", ["page" => "buy"]) }}' class='profile-tabs__item {{ $page === "buy" ? "profile-tabs__item--active" : "" }}'>購入した商品</a>
+            <a href='{{ route("profile.show", ["page" => "trading"]) }}' class='profile-tabs__item {{ $page === "trading" ? "profile-tabs__item--active" : "" }}'>
+                取引中の商品
+                @if ($user->tradingCount > 0)
+                    <span class='profile-tabs__item-badge'>{{ $user->tradingCount }}</span>
+                @endif
+            </a>
         </div>
 
         <div class='profile-items'>
             <div class='profile-items__grid'>
                 @foreach ($items as $item)
-                <a href='{{ route("items.show", $item->id) }}' class='item-card-profile'>
+                <a href='{{ $page === "trading" ? route("trade.chat", $item->id) : route("items.show", $item->id) }}' class='item-card-profile'>
                     <div class='item-card-profile__image'>
+                        @if ($page === 'trading' && $item->hasUnreadMessages())
+                        <div class='item-card-profile__notification-mark'>
+                            <span class='item-card-profile__notification-badge' aria-label='未読メッセージ {{ $item->unread_count }}件' title='未読メッセージ {{ $item->unread_count }}件'>
+                                {{ $item->unread_count }}
+                            </span>
+                        </div>
+                        @endif
                         <img src='{{ asset("storage/" . $item->image_path) }}'
                             alt='{{ $item->name }}'
                             class='item-card-profile__image-img'>

@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\URL;
 class EnsureEmailIsVerified
 {
     /**
-     * アクセスを許可するかどうかを判断する
+     * アクセスを許可するかどうかを判断します。
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next

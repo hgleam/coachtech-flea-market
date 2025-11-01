@@ -17,7 +17,7 @@ class ExhibitionRequest extends FormRequest
     }
 
     /**
-     * バリデーションルールを定義する
+     * バリデーションルールを定義します。
      *
      * @return array
      */

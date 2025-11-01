@@ -17,6 +17,7 @@ class ItemSeeder extends Seeder
     public function run()
     {
         $items = [
+            // C001
             [
                 'seller_id' => 1,
                 'condition' => ItemCondition::MINT,
@@ -27,6 +28,7 @@ class ItemSeeder extends Seeder
                 'image_path' => 'images/items/1.jpg',
                 'category_id' => 1, // ファッション
             ],
+            // C002
             [
                 'seller_id' => 1,
                 'condition' => ItemCondition::VERY_GOOD,
@@ -37,6 +39,7 @@ class ItemSeeder extends Seeder
                 'image_path' => 'images/items/2.jpg',
                 'category_id' => 2, // 家電
             ],
+            // C003
             [
                 'seller_id' => 1,
                 'condition' => ItemCondition::GOOD,
@@ -47,6 +50,7 @@ class ItemSeeder extends Seeder
                 'image_path' => 'images/items/3.jpg',
                 'category_id' => 10, // キッチン
             ],
+            // C004
             [
                 'seller_id' => 1,
                 'condition' => ItemCondition::POOR,
@@ -57,6 +61,7 @@ class ItemSeeder extends Seeder
                 'image_path' => 'images/items/4.jpg',
                 'category_id' => 5, // メンズ
             ],
+            // C005
             [
                 'seller_id' => 1,
                 'condition' => ItemCondition::MINT,
@@ -67,8 +72,9 @@ class ItemSeeder extends Seeder
                 'image_path' => 'images/items/5.jpg',
                 'category_id' => 2, // 家電
             ],
+            // C006
             [
-                'seller_id' => 1,
+                'seller_id' => 2,
                 'condition' => ItemCondition::VERY_GOOD,
                 'name' => 'マイク',
                 'brand_name' => '',
@@ -77,8 +83,9 @@ class ItemSeeder extends Seeder
                 'image_path' => 'images/items/6.jpg',
                 'category_id' => 2, // 家電
             ],
+            // C007
             [
-                'seller_id' => 1,
+                'seller_id' => 2,
                 'condition' => ItemCondition::GOOD,
                 'name' => 'ショルダーバッグ',
                 'brand_name' => '',
@@ -87,8 +94,9 @@ class ItemSeeder extends Seeder
                 'image_path' => 'images/items/7.jpg',
                 'category_id' => 4, // レディース
             ],
+            // C008
             [
-                'seller_id' => 1,
+                'seller_id' => 2,
                 'condition' => ItemCondition::POOR,
                 'name' => 'タンブラー',
                 'brand_name' => '',
@@ -97,8 +105,9 @@ class ItemSeeder extends Seeder
                 'image_path' => 'images/items/8.jpg',
                 'category_id' => 10, // キッチン
             ],
+            // C009
             [
-                'seller_id' => 1,
+                'seller_id' => 2,
                 'condition' => ItemCondition::MINT,
                 'name' => 'コーヒーミル',
                 'brand_name' => '',
@@ -107,8 +116,9 @@ class ItemSeeder extends Seeder
                 'image_path' => 'images/items/9.jpg',
                 'category_id' => 10, // キッチン
             ],
+            // C010
             [
-                'seller_id' => 1,
+                'seller_id' => 2,
                 'condition' => ItemCondition::VERY_GOOD,
                 'name' => 'メイクセット',
                 'brand_name' => '',

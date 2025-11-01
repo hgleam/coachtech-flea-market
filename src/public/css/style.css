@@ -110,9 +110,11 @@ html {
     --header-background-color: #333333;
     --background-color: #FFFFFF;
     --background-color-dark: #E5E5E5;
+    --background-sidebar-color: #868686;
     --border-color: #5F5F5F;
     --header-text-color: #FFFFFF;
     --text-color: #333333;
+    --text-sidebar-color: #FFFFFF;
     --button-color: #FFFFFF;
     --button-background-color: #D9D9D9;
     --error-color: #FF0000;
@@ -468,6 +470,11 @@ body {
     margin-top: var(--header-height);
     min-height: calc(100vh - var(--header-height));
     padding: 6rem 6rem 2rem 6rem;
+}
+
+/* 取引チャット画面では.mainのpaddingを無効化 */
+.main > .trade-chat-page {
+    margin: -6rem -6rem -2rem -6rem;
 }
 
 .main__inner {
@@ -1579,9 +1586,6 @@ body {
     background-color: var(--background-color);
     margin-top: 1rem;
 }
-/* 配送先 */
-.purchase-page__address-wrapper {
-}
 /* 配送先の住所 */
 .purchase-page__address {
     background-color: var(--background-color);
@@ -1832,8 +1836,68 @@ body {
     justify-content: space-between;
 }
 
+.profile-header__name-rating {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
 .profile-header__name {
     font-size: var(--font-size-3xl);
+}
+
+.profile-header__rating {
+    display: flex;
+    gap: 0.2rem;
+    align-items: center;
+    transform: translateX(-0.5rem);
+}
+
+.profile-header__rating-star {
+    font-size: var(--font-size-4xl);
+    color: #d3d3d3;
+    line-height: 1;
+    position: relative;
+    display: inline-block;
+}
+
+.profile-header__rating-star--filled {
+    color: #ffd700;
+}
+
+.profile-header__rating-star--half {
+    position: relative;
+    display: inline-block;
+    font-size: var(--font-size-4xl);
+    width: 1em;
+    height: 1em;
+    overflow: hidden;
+}
+
+.profile-header__rating-star-empty {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    color: #d3d3d3;
+    line-height: 1;
+    font-size: inherit;
+    display: block;
+}
+
+.profile-header__rating-star-filled {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    color: #ffd700;
+    line-height: 1;
+    font-size: inherit;
+    display: block;
+    clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);
 }
 
 .profile-header__edit-button {
@@ -1879,6 +1943,22 @@ body {
     border-bottom: 2px solid var(--primary-color);
 }
 
+.profile-tabs__item-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    font-size: var(--font-size-sm);
+    font-weight: bold;
+    margin-left: 0.5rem;
+    line-height: 1;
+}
+
 /* 商品グリッド */
 .profile-items__grid {
     display: grid;
@@ -1907,6 +1987,28 @@ body {
     justify-content: center;
     color: #999;
     overflow: hidden; /* ラベルがはみ出さないように */
+}
+
+.item-card-profile__notification-mark {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 2;
+}
+
+.item-card-profile__notification-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 8px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    font-size: var(--font-size-sm);
+    font-weight: bold;
+    line-height: 1;
 }
 
 .item-card-profile__image img {
@@ -2051,5 +2153,1159 @@ body {
         font-weight: bold;
     }
 }
+
+/* 取引チャット画面 */
+.trade-chat-page {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.trade-chat-page__alert {
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border-radius: 4px;
+    font-size: var(--font-size-xl);
+}
+
+.trade-chat-page__alert--success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.trade-chat-page__alert--danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.trade-chat-page__body {
+    display: flex;
+    gap: 0;
+    align-items: stretch;
+    height: 100%;
+    min-height: calc(100vh - var(--header-height));
+    margin: 0;
+    padding: 0;
+    flex: 1;
+}
+
+/* 左サイドバー：その他の取引 */
+.trade-chat-page__sidebar {
+    width: 280px;
+    background-color: var(--background-sidebar-color);
+    color: var(--header-text-color);
+    padding: 2rem;
+    overflow-y: auto;
+    flex-shrink: 0;
+    align-self: stretch;
+    min-height: 100%;
+}
+
+.trade-chat-page__sidebar-title {
+    font-size: var(--font-size-xl);
+    font-weight: bold;
+    margin-bottom: 2rem;
+    color: var(--text-sidebar-color);
+}
+
+.trade-chat-page__sidebar-empty {
+    color: var(--text-sidebar-color);
+    font-size: var(--font-size-base);
+}
+
+.trade-chat-page__sidebar-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.trade-chat-page__sidebar-item {
+    position: relative;
+    display: block;
+    padding: 1rem;
+    background-color: #EEEFEB;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    font-size: var(--font-size-base);
+    text-align: left;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+}
+
+.trade-chat-page__sidebar-item:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.trade-chat-page__sidebar-item:last-child {
+    margin-bottom: 0;
+}
+
+.trade-chat-page__sidebar-item-notification-mark {
+    position: absolute;
+    top: -12px;
+    left: -12px;
+    z-index: 2;
+}
+
+.trade-chat-page__sidebar-item-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 8px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    font-size: var(--font-size-sm);
+    font-weight: bold;
+    line-height: 1;
+}
+
+.trade-chat-page__sidebar-item-name {
+    display: block;
+    word-break: break-word;
+    padding-left: 1rem;
+    padding-top: 0.25rem;
+    font-size: var(--font-size-2xl);
+}
+
+/* 右側：メインコンテンツ */
+.trade-chat-page__main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--background-color);
+    padding: 0;
+    overflow-y: auto;
+}
+
+/* ヘッダー */
+.trade-chat-page__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 2rem;
+}
+
+.trade-chat-page__header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.trade-chat-page__header-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.trade-chat-page__header-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.trade-chat-page__header-title {
+    font-size: var(--font-size-4xl);
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.trade-chat-page__header-complete-form {
+    flex-shrink: 0;
+}
+
+.trade-chat-page__header-complete-button {
+    padding: 1rem 2rem;
+    background-color: var(--primary-color);
+    color: var(--button-color);
+    border: none;
+    border-radius: 4px;
+    font-size: var(--font-size-xl);
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
+}
+
+.trade-chat-page__header-complete-button:hover {
+    filter: brightness(0.9);
+}
+
+/* 商品情報セクション */
+.trade-chat-page__item-section {
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 2rem;
+}
+
+.trade-chat-page__item-image-wrapper {
+    width: 200px;
+    height: 200px;
+    flex-shrink: 0;
+    background-color: var(--background-color-dark);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.trade-chat-page__item-image-main {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.trade-chat-page__item-info-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.trade-chat-page__item-name-main {
+    font-size: var(--font-size-5xl);
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.trade-chat-page__item-price-main {
+    font-size: var(--font-size-4xl);
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+/* メッセージエリア */
+.trade-chat-page__messages-area {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 2rem;
+    min-height: 300px;
+    padding: 0 2rem;
+}
+
+.trade-chat-page__no-messages {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 300px;
+    color: #999;
+    font-size: var(--font-size-xl);
+}
+
+.trade-chat-page__message {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    align-items: flex-start;
+}
+
+.trade-chat-page__message--own {
+    justify-content: flex-end;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.trade-chat-page__message--own .trade-chat-page__message-content-wrapper {
+    align-items: flex-end;
+    margin-top: 0;
+    padding-top: 0;
+}
+
+.trade-chat-page__message-header-section--own {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    justify-content: flex-end;
+}
+
+.trade-chat-page__message--own .trade-chat-page__message-text {
+    margin-bottom: 0.5rem;
+    margin-top: 0;
+}
+
+.trade-chat-page__message--own .trade-chat-page__message-actions {
+    margin-top: 0;
+}
+
+.trade-chat-page__message-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.trade-chat-page__message-header-section {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.trade-chat-page__message-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.trade-chat-page__message-user-name {
+    font-size: var(--font-size-xl);
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.trade-chat-page__message-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.trade-chat-page__message-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.trade-chat-page__message-text {
+    font-size: var(--font-size-xl);
+    font-weight: bold;
+    color: var(--text-color);
+    background-color: var(--background-color-dark);
+    padding: 1rem;
+    border-radius: 4px;
+    word-wrap: break-word;
+    margin-bottom: 0.5rem;
+    margin-top: 0;
+    width: fit-content;
+    max-width: 400px;
+    min-height: 40px;
+    display: block;
+}
+
+.trade-chat-page__message-right-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    flex-shrink: 0;
+    align-self: flex-start;
+}
+
+.trade-chat-page__message-actions {
+    text-align: left;
+}
+
+.trade-chat-page__message--own .trade-chat-page__message-actions {
+    text-align: right;
+}
+
+.trade-chat-page__message-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.trade-chat-page__message-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.trade-chat-page__message-action {
+    font-size: var(--font-size-base);
+    color: #999;
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.trade-chat-page__message-action:hover {
+    text-decoration: underline;
+}
+
+.trade-chat-page__message-action-form {
+    display: inline;
+}
+
+.trade-chat-page__message-image {
+    margin-top: 0.5rem;
+    max-width: 300px;
+}
+
+.trade-chat-page__message-image-img {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    max-height: 300px;
+    border-radius: 4px;
+    object-fit: cover;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.trade-chat-page__message-image-img:hover {
+    opacity: 0.8;
+}
+
+/* 画像モーダル */
+.trade-chat-page__image-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 2000;
+    cursor: pointer;
+}
+
+.trade-chat-page__image-modal.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.trade-chat-page__image-modal-content {
+    max-width: 90%;
+    max-height: 90%;
+    position: relative;
+}
+
+.trade-chat-page__image-modal-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.trade-chat-page__image-modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #000;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+    z-index: 2001;
+}
+
+.trade-chat-page__image-modal-close:hover {
+    background-color: rgba(255, 255, 255, 1);
+}
+
+.trade-chat-page__edit-form {
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+.trade-chat-page__edit-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: var(--font-size-base);
+    resize: vertical;
+    min-height: 80px;
+    margin-bottom: 0.5rem;
+}
+
+.trade-chat-page__edit-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.trade-chat-page__edit-submit,
+.trade-chat-page__edit-cancel {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+}
+
+.trade-chat-page__edit-submit {
+    background-color: var(--primary-color);
+    color: var(--button-color);
+}
+
+.trade-chat-page__edit-cancel {
+    background-color: var(--background-color-dark);
+    color: var(--text-color);
+}
+
+/* 評価モーダル */
+.trade-chat-page__evaluation-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+}
+
+.trade-chat-page__evaluation-modal.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.trade-chat-page__evaluation-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.trade-chat-page__evaluation-modal-content {
+    position: relative;
+    background-color: #fff9e6;
+    padding: 2rem;
+    border-radius: 8px;
+    border: 1px solid #e6d9b8;
+    width: 90%;
+    max-width: 598px;
+    z-index: 1001;
+}
+
+.trade-chat-page__evaluation-modal-title {
+    font-size: var(--font-size-4xl);
+    font-weight: bold;
+    margin-bottom: 1rem;
+    text-align: left;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e6d9b8;
+}
+
+.trade-chat-page__evaluation-modal-subtitle {
+    font-size: var(--font-size-xl);
+    margin-bottom: 1.5rem;
+    color: var(--text-color);
+    text-align: left;
+}
+
+.trade-chat-page__evaluation-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.trade-chat-page__evaluation-rating {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0;
+}
+
+.trade-chat-page__evaluation-stars {
+    display: flex;
+    gap: 0.5rem;
+    flex-direction: row-reverse;
+    justify-content: center;
+}
+
+.trade-chat-page__evaluation-stars input[type='radio'] {
+    display: none;
+}
+
+.trade-chat-page__evaluation-stars label {
+    font-size: 7rem;
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.trade-chat-page__evaluation-stars input[type='radio']:checked ~ label,
+.trade-chat-page__evaluation-stars label:hover,
+.trade-chat-page__evaluation-stars label:hover ~ label {
+    color: #ffd700;
+}
+
+.trade-chat-page__evaluation-stars input[type='radio']:checked ~ label {
+    color: #ffd700;
+}
+
+.trade-chat-page__evaluation-actions {
+    display: flex;
+    justify-content: flex-end;
+    border-top: 1px solid #e6d9b8;
+}
+
+.trade-chat-page__evaluation-submit {
+    padding: 0.75rem 2rem;
+    background-color: #ff6b9d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: var(--font-size-2xl);
+    cursor: pointer;
+    font-weight: bold;
+    transition: opacity 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.trade-chat-page__evaluation-submit:hover {
+    opacity: 0.9;
+}
+
+.trade-chat-page__evaluation-submit-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+/* メッセージ入力エリア */
+.trade-chat-page__input-area {
+    padding: 1.5rem 2rem;
+    border-top: 1px solid var(--border-color);
+    width: 100%;
+}
+
+.trade-chat-page__message-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+}
+
+.trade-chat-page__input-wrapper {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+    width: 100%;
+}
+
+.trade-chat-page__message-input {
+    flex: 1;
+    min-width: 0;
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: var(--font-size-base);
+    resize: vertical;
+    width: 100%;
+}
+
+.trade-chat-page__input-buttons {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.trade-chat-page__image-button {
+    padding: 0.75rem 1.5rem;
+    background-color: var(--background-color);
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    border-radius: 4px;
+    font-size: var(--font-size-xl);
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.trade-chat-page__image-button:hover {
+    background-color: var(--primary-color);
+    color: var(--button-color);
+}
+
+.trade-chat-page__image-button svg {
+    flex-shrink: 0;
+}
+
+.trade-chat-page__image-preview-container {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: var(--background-color-dark);
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+}
+
+.trade-chat-page__image-preview-wrapper {
+    position: relative;
+    display: inline-block;
+    max-width: 200px;
+}
+
+.trade-chat-page__image-preview-img {
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+.trade-chat-page__image-remove-button {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.trade-chat-page__image-remove-button:hover {
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.trade-chat-page__image-preview-filename {
+    margin-top: 0.5rem;
+    font-size: var(--font-size-xs);
+    color: var(--text-color-secondary);
+    word-break: break-all;
+}
+
+.trade-chat-page__send-button-icon {
+    width: auto;
+    height: auto;
+    padding: 0;
+    background-color: transparent;
+    color: inherit;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s ease;
+    flex-shrink: 0;
+}
+
+.trade-chat-page__send-button-icon:hover {
+    opacity: 0.7;
+}
+
+.trade-chat-page__send-button-icon svg {
+    width: 48px;
+    height: 48px;
+}
+
+.trade-chat-page__send-button-icon-img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    display: block;
+}
+
+@media screen and (max-width: 768px) {
+    .trade-chat-page__send-button-icon svg {
+        width: 40px;
+        height: 40px;
+    }
+
+    .trade-chat-page__send-button-icon-img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .trade-chat-page__body {
+        flex-direction: column;
+    }
+
+    .trade-chat-page__sidebar {
+        width: 100%;
+        padding: 1rem;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    .trade-chat-page__header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1.5rem;
+    }
+
+    .trade-chat-page__header-title {
+        font-size: var(--font-size-2xl);
+    }
+
+    .trade-chat-page__item-section {
+        flex-direction: column;
+        padding: 1.5rem;
+    }
+
+    .trade-chat-page__item-image-wrapper {
+        width: 100%;
+        max-width: 300px;
+        height: auto;
+        aspect-ratio: 1;
+    }
+
+    .trade-chat-page__item-name-main {
+        font-size: var(--font-size-3xl);
+    }
+
+    .trade-chat-page__item-price-main {
+        font-size: var(--font-size-2xl);
+    }
+
+    .trade-chat-page__messages-area {
+        padding: 0 1.5rem;
+    }
+
+    .trade-chat-page__input-wrapper {
+        padding: 1rem;
+    }
+
+    .trade-chat-page__input-area {
+        padding: 1rem;
+    }
+}
+
+
+.trade-chat-page__error {
+    color: var(--error-color);
+    font-size: var(--font-size-2xl);
+}
+
+.trade-chat-page__completed {
+    padding: 2rem;
+    text-align: center;
+    background-color: var(--background-color-dark);
+    border-radius: 4px;
+}
+
+.trade-chat-page__completed-text {
+    font-size: var(--font-size-xl);
+    color: var(--text-color);
+}
+
+/* PC (1400-1540px) 調整 */
+@media screen and (max-width: 1540px) and (min-width: 1400px) {
+    .trade-chat-page__header-title {
+        font-size: var(--font-size-3xl);
+    }
+
+    .trade-chat-page__item-name-main {
+        font-size: var(--font-size-4xl);
+    }
+
+    .trade-chat-page__item-price-main {
+        font-size: var(--font-size-3xl);
+    }
+
+    .trade-chat-page__message-user-name {
+        font-size: var(--font-size-lg);
+    }
+
+    .trade-chat-page__message-text {
+        font-size: var(--font-size-lg);
+    }
+
+    .trade-chat-page__message-action {
+        font-size: var(--font-size-sm);
+    }
+
+    .trade-chat-page__sidebar-item-name {
+        font-size: var(--font-size-xl);
+    }
+
+    .trade-chat-page__header-complete-button {
+        font-size: var(--font-size-lg);
+        padding: 0.8rem 1.5rem;
+    }
+
+    .trade-chat-page__image-button {
+        font-size: var(--font-size-lg);
+    }
+
+    .trade-chat-page__evaluation-modal-title {
+        font-size: var(--font-size-3xl);
+    }
+
+    .trade-chat-page__evaluation-stars label {
+        font-size: 6rem;
+    }
+
+    .trade-chat-page__evaluation-submit {
+        font-size: var(--font-size-2xl);
+    }
+}
+
+@media screen and (max-width: 1399px) and (min-width: 1000px) {
+    .trade-chat-page__header-title {
+        font-size: var(--font-size-3xl);
+    }
+
+    .trade-chat-page__item-name-main {
+        font-size: var(--font-size-4xl);
+    }
+
+    .trade-chat-page__item-price-main {
+        font-size: var(--font-size-3xl);
+    }
+
+    .trade-chat-page__message-user-name {
+        font-size: var(--font-size-lg);
+    }
+
+    .trade-chat-page__message-text {
+        font-size: var(--font-size-lg);
+    }
+
+    .trade-chat-page__message-action {
+        font-size: var(--font-size-sm);
+    }
+
+    .trade-chat-page__sidebar-item-name {
+        font-size: var(--font-size-xl);
+    }
+
+    .trade-chat-page__header-complete-button {
+        font-size: var(--font-size-lg);
+        padding: 0.8rem 1.5rem;
+    }
+
+    .trade-chat-page__image-button {
+        font-size: var(--font-size-lg);
+    }
+}
+
+/* 900px前後の調整 */
+@media screen and (max-width: 999px) and (min-width: 851px) {
+    .trade-chat-page__header-title {
+        font-size: var(--font-size-2xl);
+    }
+
+    .trade-chat-page__item-name-main {
+        font-size: var(--font-size-3xl);
+    }
+
+    .trade-chat-page__item-price-main {
+        font-size: var(--font-size-2xl);
+    }
+
+    .trade-chat-page__message-user-name {
+        font-size: var(--font-size-base);
+    }
+
+    .trade-chat-page__message-text {
+        font-size: var(--font-size-base);
+    }
+
+    .trade-chat-page__message-action {
+        font-size: var(--font-size-xs);
+    }
+
+    .trade-chat-page__sidebar-item-name {
+        font-size: var(--font-size-lg);
+    }
+
+    .trade-chat-page__header-complete-button {
+        font-size: var(--font-size-base);
+        padding: 0.7rem 1.3rem;
+    }
+
+    .trade-chat-page__image-button {
+        font-size: var(--font-size-base);
+        padding: 0.7rem 1.3rem;
+    }
+
+    .trade-chat-page__evaluation-modal-title {
+        font-size: var(--font-size-3xl);
+    }
+
+    .trade-chat-page__evaluation-stars label {
+        font-size: 5.5rem;
+    }
+
+    .trade-chat-page__evaluation-submit {
+        font-size: var(--font-size-xl);
+    }
+}
+
+/* タブレット (768-850px) 調整 */
+@media screen and (max-width: 850px) and (min-width: 768px) {
+    .trade-chat-page__body {
+        flex-direction: column;
+    }
+
+    .trade-chat-page__sidebar {
+        width: 100%;
+        max-height: 200px;
+    }
+
+    .trade-chat-page__item-section {
+        flex-direction: column;
+    }
+
+    .trade-chat-page__item-image-wrapper {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .trade-chat-page__header-title {
+        font-size: var(--font-size-2xl);
+    }
+
+    .trade-chat-page__item-name-main {
+        font-size: var(--font-size-3xl);
+    }
+
+    .trade-chat-page__item-price-main {
+        font-size: var(--font-size-2xl);
+    }
+
+    .trade-chat-page__message-user-name {
+        font-size: var(--font-size-base);
+    }
+
+    .trade-chat-page__message-text {
+        font-size: var(--font-size-base);
+    }
+
+    .trade-chat-page__message-action {
+        font-size: var(--font-size-xs);
+    }
+
+    .trade-chat-page__sidebar-item-name {
+        font-size: var(--font-size-lg);
+    }
+
+    .trade-chat-page__header-complete-button {
+        font-size: var(--font-size-base);
+        padding: 0.6rem 1.2rem;
+    }
+
+    .trade-chat-page__image-button {
+        font-size: var(--font-size-base);
+        padding: 0.6rem 1.2rem;
+    }
+
+    .trade-chat-page__evaluation-modal-title {
+        font-size: var(--font-size-3xl);
+    }
+
+    .trade-chat-page__evaluation-stars label {
+        font-size: 5rem;
+    }
+
+    .trade-chat-page__evaluation-submit {
+        font-size: var(--font-size-xl);
+    }
+}
+
+/* 850px以下（タブレット以下）の共通スタイル */
+@media screen and (max-width: 850px) {
+    .trade-chat-page__body {
+        flex-direction: column;
+    }
+
+    .trade-chat-page__sidebar {
+        width: 100%;
+        max-height: 200px;
+    }
+
+    .trade-chat-page__item-section {
+        flex-direction: column;
+    }
+
+    .trade-chat-page__item-image-wrapper {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+/* 767px以下（タブレット未満） */
+@media screen and (max-width: 767px) {
+    .trade-chat-page__header-title {
+        font-size: var(--font-size-2xl);
+    }
+
+    .trade-chat-page__item-name-main {
+        font-size: var(--font-size-3xl);
+    }
+
+    .trade-chat-page__item-price-main {
+        font-size: var(--font-size-2xl);
+    }
+
+    .trade-chat-page__message-user-name {
+        font-size: var(--font-size-base);
+    }
+
+    .trade-chat-page__message-text {
+        font-size: var(--font-size-base);
+    }
+
+    .trade-chat-page__message-action {
+        font-size: var(--font-size-xs);
+    }
+
+    .trade-chat-page__sidebar-item-name {
+        font-size: var(--font-size-lg);
+    }
+
+    .trade-chat-page__header-complete-button {
+        font-size: var(--font-size-base);
+        padding: 0.6rem 1.2rem;
+    }
+
+    .trade-chat-page__image-button {
+        font-size: var(--font-size-base);
+        padding: 0.6rem 1.2rem;
+    }
+
+    .trade-chat-page__evaluation-modal-title {
+        font-size: var(--font-size-3xl);
+    }
+
+    .trade-chat-page__evaluation-stars label {
+        font-size: 5rem;
+    }
+
+    .trade-chat-page__evaluation-submit {
+        font-size: var(--font-size-xl);
+    }
+}
+
 
 
