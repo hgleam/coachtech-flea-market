@@ -18,7 +18,7 @@ class Evaluation extends Model
     /**
      * マスアサインメントで一括代入を許可する属性。
      *
-     * @var array
+     * @var array<string>
      */
     protected $fillable = [
         'evaluator_id',

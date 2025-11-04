@@ -16,7 +16,7 @@ class PurchaseController extends Controller
      * 商品購入ページを表示します。
      *
      * @param \App\Models\Item $item
-     * @return \Illuminate\Contracts\View\View
+     * @return \Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
      */
     public function create(Item $item)
     {
@@ -33,7 +33,7 @@ class PurchaseController extends Controller
     /**
      * 商品の購入処理を行います。
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \App\Http\Requests\PurchaseRequest $request
      * @param \App\Models\Item $item
      * @return \Illuminate\Http\RedirectResponse
      */

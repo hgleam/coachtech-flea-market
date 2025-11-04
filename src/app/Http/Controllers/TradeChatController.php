@@ -106,7 +106,7 @@ class TradeChatController extends Controller
     /**
      * 評価を送信します。
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\EvaluationRequest  $request
      * @param  \App\Models\Item  $item
      * @return \Illuminate\Http\RedirectResponse
      */

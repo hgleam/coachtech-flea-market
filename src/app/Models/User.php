@@ -186,7 +186,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * 各商品に未読メッセージ件数を含めます。
      *
      * @param  \App\Models\Item  $excludeItem
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Support\Collection<int, \App\Models\Item>
      */
     public function getTradingItemsExcept(Item $excludeItem)
     {
@@ -206,7 +206,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * 取引中の商品を最新メッセージ順にソートして取得します。
      * 各商品にメッセージ件数、未読メッセージ件数、最新メッセージ日時を付与します。
      *
-     * @return \Illuminate\Support\Collection
+     * @return \Illuminate\Support\Collection<int, \App\Models\Item>
      */
     public function getTradingItemsSortedByLatestMessage()
     {

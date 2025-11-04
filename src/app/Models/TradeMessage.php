@@ -20,7 +20,7 @@ class TradeMessage extends Model
     /**
      * マスアサインメントで一括代入を許可する属性。
      *
-     * @var array
+     * @var array<string>
      */
     protected $fillable = [
         'item_id',
@@ -74,11 +74,11 @@ class TradeMessage extends Model
     /**
      * メッセージと画像を作成します。
      *
-     * @param  array  $data
+     * @param  array<string, mixed>  $data
      * @param  \Illuminate\Http\UploadedFile|null  $image
-     * @return static
+     * @return self
      */
-    public static function createWithImage(array $data, ?UploadedFile $image = null): static
+    public static function createWithImage(array $data, ?UploadedFile $image = null): self
     {
         if ($image) {
             $data['image_path'] = $image->store('trade_messages', 'public');

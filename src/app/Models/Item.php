@@ -17,6 +17,10 @@ use Illuminate\Support\Facades\DB;
  * 商品モデル。
  *
  * 商品の情報を管理します。
+ *
+ * @property int|null $unread_count 未読メッセージ件数（動的に追加される）
+ * @property int|null $message_count メッセージ件数（動的に追加される）
+ * @property \Carbon\Carbon|null $latest_message_at 最新メッセージ日時（動的に追加される）
  */
 class Item extends Model
 {
@@ -25,7 +29,7 @@ class Item extends Model
     /**
      * マスアサインメントで一括代入を許可する属性。
      *
-     * @var array
+     * @var array<string>
      */
     protected $fillable = [
         'seller_id',
@@ -174,7 +178,7 @@ class Item extends Model
      * この商品の最新メッセージの作成日時を取得します。
      * メッセージがない場合は、商品の作成日時を返します。
      *
-     * @return \Illuminate\Support\Carbon
+     * @return \Carbon\Carbon
      */
     public function getLatestTradeMessageDate()
     {

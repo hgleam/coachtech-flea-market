@@ -24,7 +24,7 @@ class EvaluationRequest extends FormRequest
     /**
      * バリデーションルールを取得します。
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, array<mixed>|string>
      */
     public function rules(): array
     {

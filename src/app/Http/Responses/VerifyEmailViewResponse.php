@@ -16,7 +16,7 @@ class VerifyEmailViewResponse implements VerifyEmailViewResponseContract
      * メール認証画面を表示
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
      */
     public function toResponse($request)
     {

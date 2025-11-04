@@ -107,7 +107,7 @@ class ItemController extends Controller
     /**
      * 商品コメントを投稿
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \App\Http\Requests\CommentRequest $request
      * @param \App\Models\Item $item
      * @return \Illuminate\Http\RedirectResponse
      */
