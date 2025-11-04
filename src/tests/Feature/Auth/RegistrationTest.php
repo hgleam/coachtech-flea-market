@@ -3,9 +3,7 @@
 namespace Tests\Feature\Auth;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Validation\ValidationException;
 use Tests\TestCase;
-use App\Models\User;
 use App\Providers\RouteServiceProvider;
 
 /**

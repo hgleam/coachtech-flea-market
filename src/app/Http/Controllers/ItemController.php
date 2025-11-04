@@ -9,7 +9,6 @@ use App\Models\Item;
 use Illuminate\Http\Request;
 use App\Http\Requests\CommentRequest;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 
 /**
  * 商品コントローラー

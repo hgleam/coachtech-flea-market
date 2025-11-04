@@ -8,8 +8,6 @@ use App\Models\User;
 use App\Models\Item;
 use App\Models\Order;
 use App\Models\TradeMessage;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 
 class ProfileTest extends TestCase
