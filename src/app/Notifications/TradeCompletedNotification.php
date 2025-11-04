@@ -53,7 +53,7 @@ class TradeCompletedNotification extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)
+        return (new MailMessage())
             ->subject('取引が完了しました')
             ->line('「' . $this->item->name . '」の取引が完了しました。')
             ->line('購入者との取引チャット画面から、取引相手の評価を行うことができます。')

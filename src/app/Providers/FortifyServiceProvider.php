@@ -8,8 +8,8 @@ use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
-use Laravel\Fortify\Fortify;
 use Laravel\Fortify\Contracts\VerifyEmailViewResponse;
+use Laravel\Fortify\Fortify;
 
 /**
  * Fortifyサービスプロバイダー

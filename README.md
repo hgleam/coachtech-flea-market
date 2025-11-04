@@ -193,6 +193,36 @@ docker compose exec php php artisan test tests/Feature/TradeChatTest.php
 
 ---
 
+## 🔧 開発・デバッグ
+
+### コード品質チェック
+
+このプロジェクトでは、コード品質を保つために以下のツールを導入しています。
+
+#### Larastan (静的解析)
+
+```bash
+# 型チェックとコード品質の分析
+docker compose exec php ./vendor/bin/phpstan analyse app --memory-limit=512M --level=5
+```
+
+設定ファイル: `phpstan.neon`
+
+#### PHP CS Fixer (コード整形)
+
+```bash
+# 未使用のuse文を削除
+docker compose exec php ./vendor/bin/php-cs-fixer fix app --rules=no_unused_imports
+
+# テストファイルの未使用のuse文を削除
+docker compose exec php ./vendor/bin/php-cs-fixer fix tests --rules=no_unused_imports
+
+# 全体的なコード整形
+docker compose exec php ./vendor/bin/php-cs-fixer fix app
+```
+
+---
+
 ## ER図
 
 ![ER図](er.png)

@@ -48,4 +48,3 @@ class EvaluationRequest extends FormRequest
         ];
     }
 }
-

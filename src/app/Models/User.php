@@ -3,16 +3,16 @@
 namespace App\Models;
 
 use App\Enums\ItemStatus;
+use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
+use Laravel\Sanctum\HasApiTokens;
 
 /**
  * ユーザーモデル。
@@ -21,7 +21,9 @@ use Carbon\Carbon;
  */
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
 
     /**
      * マスアサインメントで一括代入を許可する属性。
@@ -195,6 +197,7 @@ class User extends Authenticatable implements MustVerifyEmail
             ->unique('id')
             ->map(function ($item) {
                 $item->unread_count = $item->getUnreadMessageCount($this);
+
                 return $item;
             });
     }
@@ -213,9 +216,11 @@ class User extends Authenticatable implements MustVerifyEmail
             $item->message_count = $item->getTradeMessageCount();
             $item->unread_count = $item->getUnreadMessageCount($this);
             $item->latest_message_at = $item->getLatestTradeMessageDate();
+
             return $item;
         })->sortByDesc(function ($item) {
             $date = $item->latest_message_at;
+
             return $date instanceof Carbon ? $date->timestamp : strtotime($date);
         })->values();
     }

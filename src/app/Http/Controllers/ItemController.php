@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ItemCondition;
+use App\Http\Requests\CommentRequest;
 use App\Http\Requests\ExhibitionRequest;
 use App\Models\Category;
-use App\Enums\ItemCondition;
 use App\Models\Item;
 use Illuminate\Http\Request;
-use App\Http\Requests\CommentRequest;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -59,7 +59,8 @@ class ItemController extends Controller
     public function show($id)
     {
         $item = Item::with(['comments.user', 'categories', 'likedByUsers'])->findOrFail($id);
-        $is_sold = !is_null($item->buyer_id);
+        $is_sold = ! is_null($item->buyer_id);
+
         return view('items.show', compact('item', 'is_sold'));
     }
 
@@ -72,6 +73,7 @@ class ItemController extends Controller
     {
         $categories = Category::all();
         $conditions = ItemCondition::cases();
+
         return view('items.create', compact('categories', 'conditions'));
     }
 

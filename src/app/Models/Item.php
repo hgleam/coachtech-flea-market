@@ -7,9 +7,9 @@ use App\Enums\ItemStatus;
 use App\Notifications\TradeCompletedNotification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\DB;
 
@@ -150,7 +150,7 @@ class Item extends Model
     public function getUnreadMessageCount(User $user): int
     {
         $tradePartner = $this->getTradePartner($user);
-        if (!$tradePartner) {
+        if (! $tradePartner) {
             return 0;
         }
 
@@ -179,6 +179,7 @@ class Item extends Model
     public function getLatestTradeMessageDate()
     {
         $latestMessage = $this->tradeMessages()->latest('created_at')->first();
+
         return $latestMessage ? $latestMessage->created_at : $this->created_at;
     }
 
@@ -276,12 +277,12 @@ class Item extends Model
      */
     public function needsEvaluationBy(User $user): array
     {
-        if (!$this->isCompleted()) {
+        if (! $this->isCompleted()) {
             return ['needs' => false, 'target' => null];
         }
 
         $evaluationTarget = $this->getTradePartner($user);
-        if (!$evaluationTarget) {
+        if (! $evaluationTarget) {
             return ['needs' => false, 'target' => null];
         }
 
@@ -291,7 +292,7 @@ class Item extends Model
             ->first();
 
         return [
-            'needs' => !$existingEvaluation,
+            'needs' => ! $existingEvaluation,
             'target' => $evaluationTarget,
         ];
     }
@@ -306,7 +307,7 @@ class Item extends Model
      */
     public function completeTradeBy(User $user): void
     {
-        if (!$this->isTrading()) {
+        if (! $this->isTrading()) {
             throw new \RuntimeException('この商品は取引中ではありません');
         }
 
@@ -315,7 +316,7 @@ class Item extends Model
 
             // 商品購入者が取引を完了すると、商品出品者宛に自動で通知メールが送信される
             $isSeller = $this->isSeller($user);
-            if (!$isSeller && $this->seller) {
+            if (! $isSeller && $this->seller) {
                 $this->seller->notify(new TradeCompletedNotification($this));
             }
         });

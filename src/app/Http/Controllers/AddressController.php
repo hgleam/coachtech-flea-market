@@ -6,7 +6,6 @@ use App\Http\Requests\AddressRequest;
 use App\Models\Item;
 use Illuminate\Support\Facades\Auth;
 
-
 class AddressController extends Controller
 {
     /**
@@ -17,6 +16,7 @@ class AddressController extends Controller
         $sessionKey = 'shipping_address_for_item_' . $item->id;
         $shippingAddress = session($sessionKey);
         $user = Auth::user();
+
         return view('address.edit', compact('user', 'item', 'shippingAddress'));
     }
 

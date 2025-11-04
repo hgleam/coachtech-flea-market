@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Enums\ItemStatus;
-use App\Models\Item;
 use App\Http\Requests\PurchaseRequest;
+use App\Models\Item;
 use App\Models\Order;
 use App\Models\ShippingAddress;
 use Illuminate\Support\Facades\Auth;
@@ -20,7 +20,7 @@ class PurchaseController extends Controller
      */
     public function create(Item $item)
     {
-        if (!is_null($item->buyer_id)) {
+        if (! is_null($item->buyer_id)) {
             return redirect()->route('items.show', $item)->with('error', 'この商品は既に購入されています');
         }
 
@@ -39,9 +39,10 @@ class PurchaseController extends Controller
      */
     public function store(PurchaseRequest $request, Item $item)
     {
-        if (!is_null($item->buyer_id)) {
+        if (! is_null($item->buyer_id)) {
             return redirect()->route('items.show', $item)->with('error', 'この商品は既に購入されています');
         }
+
         try {
             DB::transaction(function () use ($request, $item) {
                 // 購入商品を作成
@@ -61,7 +62,7 @@ class PurchaseController extends Controller
                 $sessionKey = 'shipping_address_for_item_' . $item->id;
                 $addressData = session($sessionKey);
 
-                if (!$addressData) {
+                if (! $addressData) {
                     $user = Auth::user();
                     $addressData = [
                         'zip_code' => $user->zip_code,

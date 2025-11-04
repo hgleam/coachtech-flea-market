@@ -1,0 +1,21 @@
+includes:
+    - ./vendor/larastan/larastan/extension.neon
+
+parameters:
+
+    paths:
+        - app/
+
+    # Rule level
+    # The higher the rule level is, the stricter the analysis becomes.
+    # Check out: https://phpstan.org/user-guide/rule-levels
+    level: 5
+
+    ignoreErrors:
+        - '#PHPDoc tag @var#'
+
+    excludePaths:
+        - ./*/*/FileToIgnore.php
+
+    checkMissingIterableValueType: false
+

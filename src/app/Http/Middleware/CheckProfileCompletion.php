@@ -24,7 +24,7 @@ class CheckProfileCompletion
         $isProfileRoute = $request->routeIs('profile.edit') || $request->routeIs('profile.update');
 
         // ログインしていて、かつ現在のルートがプロフィール関連ではない場合
-        if (Auth::check() && !$isProfileRoute) {
+        if (Auth::check() && ! $isProfileRoute) {
             $profileIsIncomplete = empty($user->name) ||
                                    empty($user->zip_code) ||
                                    empty($user->address);

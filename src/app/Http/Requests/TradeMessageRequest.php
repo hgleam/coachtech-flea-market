@@ -34,7 +34,7 @@ class TradeMessageRequest extends FormRequest
                 if ($value) {
                     $extension = strtolower($value->getClientOriginalExtension());
                     $allowedExtensions = ['jpeg', 'jpg', 'png'];
-                    if (!in_array($extension, $allowedExtensions)) {
+                    if (! in_array($extension, $allowedExtensions)) {
                         $fail('「.png」または「.jpeg」形式でアップロードしてください');
                     }
                 }

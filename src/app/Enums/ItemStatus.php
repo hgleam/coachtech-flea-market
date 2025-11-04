@@ -11,4 +11,3 @@ enum ItemStatus: string
     case TRADING = 'trading';
     case COMPLETED = 'completed';
 }
-

@@ -66,4 +66,3 @@ class StarRating extends Component
         return view('components.star-rating');
     }
 }
-

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EvaluationRequest;
+use App\Http\Requests\TradeMessageRequest;
+use App\Models\Evaluation;
 use App\Models\Item;
 use App\Models\TradeMessage;
-use App\Models\Evaluation;
-use App\Http\Requests\TradeMessageRequest;
-use App\Http\Requests\EvaluationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -28,11 +28,11 @@ class TradeChatController extends Controller
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        if (!$item->isRelatedTo($user)) {
+        if (! $item->isRelatedTo($user)) {
             return redirect()->route('items.index')->with('error', 'この取引にアクセスする権限がありません');
         }
 
-        if (!$item->isTradeAccessible()) {
+        if (! $item->isTradeAccessible()) {
             return redirect()->route('items.show', $item)->with('error', 'この商品は取引中または取引完了ではありません');
         }
 
@@ -53,11 +53,11 @@ class TradeChatController extends Controller
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        if (!$item->isRelatedTo($user)) {
+        if (! $item->isRelatedTo($user)) {
             return redirect()->route('items.index')->with('error', 'この取引にアクセスする権限がありません');
         }
 
-        if (!$item->isTrading()) {
+        if (! $item->isTrading()) {
             return redirect()->route('trade.chat', $item)->with('error', '取引が完了しているため、メッセージを送信できません');
         }
 
@@ -84,11 +84,11 @@ class TradeChatController extends Controller
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        if (!$item->isRelatedTo($user)) {
+        if (! $item->isRelatedTo($user)) {
             return redirect()->route('items.index')->with('error', 'この取引にアクセスする権限がありません');
         }
 
-        if (!$item->isTrading()) {
+        if (! $item->isTrading()) {
             return redirect()->route('trade.chat', $item)->with('error', 'この商品は取引中ではありません');
         }
 
@@ -115,11 +115,11 @@ class TradeChatController extends Controller
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        if (!$item->isRelatedTo($user)) {
+        if (! $item->isRelatedTo($user)) {
             return redirect()->route('items.index')->with('error', 'この取引にアクセスする権限がありません');
         }
 
-        if (!$item->isCompleted()) {
+        if (! $item->isCompleted()) {
             return redirect()->route('trade.chat', $item)->with('error', '取引が完了していないため、評価を送信できません');
         }
 
@@ -147,11 +147,11 @@ class TradeChatController extends Controller
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        if (!$message->isOwnedBy($user)) {
+        if (! $message->isOwnedBy($user)) {
             abort(403, 'このメッセージを編集する権限がありません');
         }
 
-        if (!$message->isRelatedToItem($item)) {
+        if (! $message->isRelatedToItem($item)) {
             abort(404);
         }
 
@@ -175,11 +175,11 @@ class TradeChatController extends Controller
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        if (!$message->isOwnedBy($user)) {
+        if (! $message->isOwnedBy($user)) {
             abort(403, 'このメッセージを削除する権限がありません');
         }
 
-        if (!$message->isRelatedToItem($item)) {
+        if (! $message->isRelatedToItem($item)) {
             abort(404);
         }
 

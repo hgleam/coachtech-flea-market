@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Requests\ProfileRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -43,15 +43,16 @@ class ProfileController extends Controller
     public function edit()
     {
         $user = auth()->user();
+
         return view('profile.edit', compact('user'));
     }
 
-     /**
-     * プロフィール更新処理
-     *
-     * @param ProfileRequest $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
+    /**
+    * プロフィール更新処理
+    *
+    * @param ProfileRequest $request
+    * @return \Illuminate\Http\RedirectResponse
+    */
     public function update(ProfileRequest $request)
     {
         /** @var \App\Models\User $user */
