@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Actions\Fortify\CreateNewUser;
+use App\Http\Requests\LoginRequest as AppLoginRequest;
 use App\Http\Responses\VerifyEmailViewResponse as AppVerifyEmailViewResponse;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Fortify\Contracts\VerifyEmailViewResponse;
 use Laravel\Fortify\Fortify;
+use Laravel\Fortify\Http\Requests\LoginRequest as FortifyLoginRequest;
 
 /**
  * Fortifyサービスプロバイダー
@@ -26,6 +28,12 @@ class FortifyServiceProvider extends ServiceProvider
         $this->app->singleton(
             VerifyEmailViewResponse::class,
             AppVerifyEmailViewResponse::class
+        );
+
+        // FortifyのLoginRequestをカスタムのLoginRequestにバインド
+        $this->app->bind(
+            FortifyLoginRequest::class,
+            AppLoginRequest::class
         );
     }
 
