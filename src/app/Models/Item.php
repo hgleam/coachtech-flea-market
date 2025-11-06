@@ -302,6 +302,30 @@ class Item extends Model
     }
 
     /**
+     * この商品について、出品者と購入者の両方が評価を送信しているかどうかを判定します。
+     *
+     * @return bool
+     */
+    public function isFullyEvaluated(): bool
+    {
+        if (! $this->isCompleted() || ! $this->seller || ! $this->buyer) {
+            return false;
+        }
+
+        $hasSellerEvaluation = \App\Models\Evaluation::where('item_id', $this->id)
+            ->where('evaluator_id', $this->seller->id)
+            ->where('evaluated_id', $this->buyer->id)
+            ->exists();
+
+        $hasBuyerEvaluation = \App\Models\Evaluation::where('item_id', $this->id)
+            ->where('evaluator_id', $this->buyer->id)
+            ->where('evaluated_id', $this->seller->id)
+            ->exists();
+
+        return $hasSellerEvaluation && $hasBuyerEvaluation;
+    }
+
+    /**
      * 指定されたユーザーによって取引を完了します。
      * 購入者が取引を完了した場合、出品者に通知メールを送信します。
      *

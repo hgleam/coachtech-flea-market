@@ -67,9 +67,11 @@ class TradeChatController extends Controller
             'message' => $request->message,
         ], $request->file('image'));
 
+        // メッセージ送信後、セッションから入力内容を削除
+        session()->forget('message_input_' . $user->id . '_' . $item->id);
+
         return redirect()->route('trade.chat', $item)
-            ->with('success', 'メッセージを送信しました')
-            ->without('message_input_' . $item->id);
+            ->with('success', 'メッセージを送信しました');
     }
 
     /**

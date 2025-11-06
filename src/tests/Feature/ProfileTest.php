@@ -259,6 +259,83 @@ class ProfileTest extends TestCase
     }
 
     /**
+     * 両方が評価を完了した取引は、マイページの「取引中の商品」タブから除外される
+     */
+    public function test_fully_evaluated_trades_are_excluded_from_trading_items_list()
+    {
+        /** @var \App\Models\User $seller */
+        $seller = User::factory()->create();
+        /** @var \App\Models\User $buyer */
+        $buyer = User::factory()->create();
+
+        // 取引中の商品（評価未完了）
+        $tradingItem = Item::factory()->for($seller, 'seller')->create([
+            'buyer_id' => $buyer->id,
+            'status' => \App\Enums\ItemStatus::TRADING->value,
+        ]);
+
+        // 取引完了済みの商品（評価未完了 - 出品者のみ評価済み）
+        $partiallyEvaluatedItem = Item::factory()->for($seller, 'seller')->create([
+            'buyer_id' => $buyer->id,
+            'status' => \App\Enums\ItemStatus::COMPLETED->value,
+        ]);
+        \App\Models\Evaluation::factory()->create([
+            'evaluator_id' => $seller->id,
+            'evaluated_id' => $buyer->id,
+            'item_id' => $partiallyEvaluatedItem->id,
+            'rating' => 5,
+        ]);
+
+        // 取引完了済みの商品（両方が評価完了）
+        $fullyEvaluatedItem = Item::factory()->for($seller, 'seller')->create([
+            'buyer_id' => $buyer->id,
+            'status' => \App\Enums\ItemStatus::COMPLETED->value,
+        ]);
+        \App\Models\Evaluation::factory()->create([
+            'evaluator_id' => $seller->id,
+            'evaluated_id' => $buyer->id,
+            'item_id' => $fullyEvaluatedItem->id,
+            'rating' => 5,
+        ]);
+        \App\Models\Evaluation::factory()->create([
+            'evaluator_id' => $buyer->id,
+            'evaluated_id' => $seller->id,
+            'item_id' => $fullyEvaluatedItem->id,
+            'rating' => 4,
+        ]);
+
+        // メソッドから直接確認（まず実装を確認）
+        $tradingItems = $buyer->getTradingItemsSortedByLatestMessage();
+        $itemIds = $tradingItems->pluck('id')->toArray();
+
+        $this->assertContains($tradingItem->id, $itemIds, '取引中の商品は含まれること');
+        $this->assertContains($partiallyEvaluatedItem->id, $itemIds, '一部評価済みの商品は含まれること');
+        $this->assertNotContains($fullyEvaluatedItem->id, $itemIds, '両方が評価完了した商品は含まれないこと');
+
+        // 購入者のマイページで確認
+        $response = $this
+            ->actingAs($buyer)
+            ->get('/mypage?page=trading');
+
+        $response->assertStatus(200);
+        $html = $response->getContent();
+
+        // 商品IDで確認（商品名の部分一致を避けるため）
+        $tradingItemUrl = "/trade/chat/{$tradingItem->id}";
+        $partiallyEvaluatedItemUrl = "/trade/chat/{$partiallyEvaluatedItem->id}";
+        $fullyEvaluatedItemUrl = "/trade/chat/{$fullyEvaluatedItem->id}";
+
+        // 取引中の商品は表示される
+        $this->assertStringContainsString($tradingItemUrl, $html, '取引中の商品のURLが含まれること');
+
+        // 一部評価済みの商品は表示される（まだ評価が必要）
+        $this->assertStringContainsString($partiallyEvaluatedItemUrl, $html, '一部評価済みの商品のURLが含まれること');
+
+        // 両方が評価完了した商品は表示されない
+        $this->assertStringNotContainsString($fullyEvaluatedItemUrl, $html, '両方が評価完了した商品のURLが含まれないこと');
+    }
+
+    /**
      * US001-FN005: 取引商品新規通知確認機能
      * 新規通知が来た商品は、取引中の各商品の左上に通知マークを表示する
      * 通知マークから何件メッセージが来ているかが確認できる

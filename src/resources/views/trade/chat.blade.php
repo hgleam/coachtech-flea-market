@@ -15,10 +15,8 @@
     $evaluationInfo = $item->needsEvaluationBy(Auth::user());
     $needsEvaluation = $evaluationInfo['needs'];
     $evaluationTarget = $evaluationInfo['target'];
-    $needsEvaluationValue = ($needsEvaluation && $evaluationTarget) ? 'true' : 'false';
-    if (session('needs_evaluation')) {
-        $needsEvaluationValue = 'true';
-    }
+    // 評価が必要な場合（セッションまたはneedsEvaluationByの結果）にtrueを設定
+    $needsEvaluationValue = (session('needs_evaluation') || ($needsEvaluation && $evaluationTarget)) ? 'true' : 'false';
 @endphp
 
 <div class='trade-chat-page'
@@ -160,7 +158,7 @@
                             <p class='trade-chat-page__error'>{{ $message }}</p>
                         @enderror
                         <div class='trade-chat-page__input-wrapper'>
-                            <textarea name='message' id='message-input' class='trade-chat-page__message-input' placeholder='取引メッセージを記入してください' rows='1' required data-item-id='{{ $item->id }}'>{{ old('message', session('message_input_' . $item->id, '')) }}</textarea>
+                            <textarea name='message' id='message-input' class='trade-chat-page__message-input' placeholder='取引メッセージを記入してください' rows='1' required data-item-id='{{ $item->id }}' data-user-id='{{ Auth::id() }}'>{{ old('message', session('message_input_' . Auth::id() . '_' . $item->id, '')) }}</textarea>
                             <div class='trade-chat-page__input-buttons'>
                                 <label for='image-input' class='trade-chat-page__image-button'>
                                     <svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>
@@ -190,7 +188,7 @@
                         </div>
                     </form>
                 </div>
-            @else
+            @elseif ($isCompleted && $item->isFullyEvaluated())
                 <div class='trade-chat-page__completed'>
                     <p class='trade-chat-page__completed-text'>この取引は完了しました</p>
                 </div>

@@ -106,25 +106,27 @@ class User extends Authenticatable implements MustVerifyEmail
 
     /**
      * ユーザーが出品した取引中の商品を取得します。
+     * 取引中（TRADING）または取引完了（COMPLETED）の商品を取得します。
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function tradingItemsAsSeller(): HasMany
     {
         return $this->hasMany(Item::class, 'seller_id')
-            ->where('status', ItemStatus::TRADING->value)
+            ->whereIn('status', [ItemStatus::TRADING->value, ItemStatus::COMPLETED->value])
             ->whereNotNull('buyer_id');
     }
 
     /**
      * ユーザーが購入した取引中の商品を取得します。
+     * 取引中（TRADING）または取引完了（COMPLETED）の商品を取得します。
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function tradingItemsAsBuyer(): HasMany
     {
         return $this->hasMany(Item::class, 'buyer_id')
-            ->where('status', ItemStatus::TRADING->value);
+            ->whereIn('status', [ItemStatus::TRADING->value, ItemStatus::COMPLETED->value]);
     }
 
     /**
@@ -184,27 +186,35 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * 指定された商品を除く、その他の取引中の商品を取得します。
      * 各商品に未読メッセージ件数を含めます。
+     * 両方のユーザーが評価を完了している商品は除外します。
      *
      * @param  \App\Models\Item  $excludeItem
      * @return \Illuminate\Support\Collection<int, \App\Models\Item>
      */
     public function getTradingItemsExcept(Item $excludeItem)
     {
-        return $this->tradingItemsAsSeller->merge($this->tradingItemsAsBuyer)
+        $items = $this->tradingItemsAsSeller->merge($this->tradingItemsAsBuyer)
             ->filter(function ($tradingItem) use ($excludeItem) {
-                return $tradingItem->id !== $excludeItem->id && $tradingItem->isTrading();
+                return $tradingItem->id !== $excludeItem->id && $tradingItem->isTradeAccessible();
             })
-            ->unique('id')
-            ->map(function ($item) {
-                $item->unread_count = $item->getUnreadMessageCount($this);
+            ->unique('id');
 
-                return $item;
-            });
+        $fullyEvaluatedItemIds = $this->getFullyEvaluatedItemIds($items);
+
+        return $items->filter(function ($item) use ($fullyEvaluatedItemIds) {
+            // 両方が評価を完了している商品は除外
+            return ! in_array($item->id, $fullyEvaluatedItemIds);
+        })->map(function ($item) {
+            $item->unread_count = $item->getUnreadMessageCount($this);
+
+            return $item;
+        });
     }
 
     /**
      * 取引中の商品を最新メッセージ順にソートして取得します。
      * 各商品にメッセージ件数、未読メッセージ件数、最新メッセージ日時を付与します。
+     * 両方のユーザーが評価を完了している商品は除外します。
      *
      * @return \Illuminate\Support\Collection<int, \App\Models\Item>
      */
@@ -212,7 +222,12 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $items = $this->tradingItemsAsSeller->merge($this->tradingItemsAsBuyer)->unique('id');
 
-        return $items->map(function ($item) {
+        $fullyEvaluatedItemIds = $this->getFullyEvaluatedItemIds($items);
+
+        return $items->filter(function ($item) use ($fullyEvaluatedItemIds) {
+            // 両方が評価を完了している商品は除外
+            return ! in_array($item->id, $fullyEvaluatedItemIds);
+        })->map(function ($item) {
             $item->message_count = $item->getTradeMessageCount();
             $item->unread_count = $item->getUnreadMessageCount($this);
             $item->latest_message_at = $item->getLatestTradeMessageDate();
@@ -223,6 +238,67 @@ class User extends Authenticatable implements MustVerifyEmail
 
             return $date instanceof Carbon ? $date->timestamp : strtotime($date);
         })->values();
+    }
+
+    /**
+     * 両方のユーザーが評価を完了している取引完了済み商品のIDを取得します。
+     * N+1クエリを回避するため、評価データを一括取得します。
+     *
+     * @param  \Illuminate\Support\Collection<int, \App\Models\Item>  $items
+     * @return array<int>
+     */
+    private function getFullyEvaluatedItemIds($items): array
+    {
+        $completedItemIds = $items->filter(function ($item) {
+            return $item->isCompleted();
+        })->pluck('id');
+
+        if ($completedItemIds->isEmpty()) {
+            return [];
+        }
+
+        // 評価データを一括取得（N+1クエリを回避）
+        $evaluations = Evaluation::whereIn('item_id', $completedItemIds)->get();
+
+        $fullyEvaluatedItemIds = [];
+        foreach ($completedItemIds as $itemId) {
+            $item = $items->firstWhere('id', $itemId);
+            if (! $item || ! $this->isItemFullyEvaluated($item, $evaluations)) {
+                continue;
+            }
+
+            $fullyEvaluatedItemIds[] = $itemId;
+        }
+
+        return $fullyEvaluatedItemIds;
+    }
+
+    /**
+     * 指定された商品について、出品者と購入者の両方が評価を送信しているかどうかを判定します。
+     *
+     * @param  \App\Models\Item  $item
+     * @param  \Illuminate\Database\Eloquent\Collection<\App\Models\Evaluation>  $evaluations
+     * @return bool
+     */
+    private function isItemFullyEvaluated(Item $item, $evaluations): bool
+    {
+        if (! $item->seller || ! $item->buyer) {
+            return false;
+        }
+
+        $hasSellerEvaluation = $evaluations
+            ->where('item_id', $item->id)
+            ->where('evaluator_id', $item->seller->id)
+            ->where('evaluated_id', $item->buyer->id)
+            ->isNotEmpty();
+
+        $hasBuyerEvaluation = $evaluations
+            ->where('item_id', $item->id)
+            ->where('evaluator_id', $item->buyer->id)
+            ->where('evaluated_id', $item->seller->id)
+            ->isNotEmpty();
+
+        return $hasSellerEvaluation && $hasBuyerEvaluation;
     }
 
     /**

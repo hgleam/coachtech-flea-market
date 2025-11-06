@@ -24,13 +24,24 @@
         if (!messageInput) return;
 
         const itemId = messageInput.dataset.itemId;
-        const storageKey = 'trade_message_input_' + itemId;
+        const userId = messageInput.dataset.userId;
+        const storageKey = 'trade_message_input_' + userId + '_' + itemId;
 
-        // 初期表示時に保存されたメッセージを復元
-        const savedMessage = localStorage.getItem(storageKey);
-        if (savedMessage && !messageInput.value) {
-            messageInput.value = savedMessage;
+        // 成功メッセージがある場合はlocalStorageとテキストエリアをクリア（メッセージ送信成功時）
+        // リダイレクト後のページ読み込み時のみ実行する
+        const successMessage = document.querySelector('.trade-chat-page__alert--success');
+        if (successMessage) {
+            localStorage.removeItem(storageKey);
+            // メッセージ送信成功時はテキストエリアもクリア
+            messageInput.value = '';
             adjustTextareaHeight(messageInput);
+        } else {
+            // 成功メッセージがない場合のみ、localStorageから復元を試みる
+            const savedMessage = localStorage.getItem(storageKey);
+            if (savedMessage && !messageInput.value.trim()) {
+                messageInput.value = savedMessage;
+                adjustTextareaHeight(messageInput);
+            }
         }
 
         // 入力時にlocalStorageに保存
@@ -39,13 +50,13 @@
             adjustTextareaHeight(this);
         });
 
-        // フォーム送信時にlocalStorageをクリア
+        // フォーム送信時にlocalStorageをクリア（テキストエリアはサーバー側で処理後にクリア）
+        // 送信前にテキストエリアをクリアしない（バリデーションエラーを避けるため）
         const messageForm = messageInput.closest('form');
         if (messageForm) {
-            messageForm.addEventListener('submit', function() {
-                setTimeout(function() {
-                    localStorage.removeItem(storageKey);
-                }, 100);
+            messageForm.addEventListener('submit', function(e) {
+                // localStorageのみクリア
+                localStorage.removeItem(storageKey);
             });
         }
 

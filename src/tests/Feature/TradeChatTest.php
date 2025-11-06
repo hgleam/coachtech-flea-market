@@ -2,11 +2,14 @@
 
 namespace Tests\Feature;
 
+use App\Enums\ItemStatus;
+use App\Models\Evaluation;
+use App\Models\Item;
+use App\Models\User;
+use App\Models\TradeMessage;
+use App\Notifications\TradeCompletedNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use App\Models\User;
-use App\Models\Item;
-use App\Models\TradeMessage;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
@@ -28,13 +31,13 @@ class TradeChatTest extends TestCase
         // 2つの取引中の商品を作成
         $currentItem = Item::factory()->for($seller, 'seller')->create([
             'buyer_id' => $buyer->id,
-            'status' => \App\Enums\ItemStatus::TRADING->value,
+            'status' => ItemStatus::TRADING->value,
             'name' => '現在の取引商品',
         ]);
 
         $otherItem = Item::factory()->for($seller, 'seller')->create([
             'buyer_id' => $buyer->id,
-            'status' => \App\Enums\ItemStatus::TRADING->value,
+            'status' => ItemStatus::TRADING->value,
             'name' => '別の取引商品',
         ]);
 
@@ -85,7 +88,7 @@ class TradeChatTest extends TestCase
         $buyer = User::factory()->create();
         $item = Item::factory()->for($seller, 'seller')->create([
             'buyer_id' => $buyer->id,
-            'status' => \App\Enums\ItemStatus::TRADING->value,
+            'status' => ItemStatus::TRADING->value,
         ]);
 
         $response = $this
@@ -118,7 +121,7 @@ class TradeChatTest extends TestCase
         $buyer = User::factory()->create();
         $item = Item::factory()->for($seller, 'seller')->create([
             'buyer_id' => $buyer->id,
-            'status' => \App\Enums\ItemStatus::TRADING->value,
+            'status' => ItemStatus::TRADING->value,
         ]);
 
         $file = UploadedFile::fake()->image('test.png');
@@ -157,7 +160,7 @@ class TradeChatTest extends TestCase
         $buyer = User::factory()->create();
         $item = Item::factory()->for($seller, 'seller')->create([
             'buyer_id' => $buyer->id,
-            'status' => \App\Enums\ItemStatus::TRADING->value,
+            'status' => ItemStatus::TRADING->value,
         ]);
 
         $response = $this
@@ -182,7 +185,7 @@ class TradeChatTest extends TestCase
         $buyer = User::factory()->create();
         $item = Item::factory()->for($seller, 'seller')->create([
             'buyer_id' => $buyer->id,
-            'status' => \App\Enums\ItemStatus::TRADING->value,
+            'status' => ItemStatus::TRADING->value,
         ]);
 
         $longMessage = str_repeat('a', 401);
@@ -213,7 +216,7 @@ class TradeChatTest extends TestCase
         $buyer = User::factory()->create();
         $item = Item::factory()->for($seller, 'seller')->create([
             'buyer_id' => $buyer->id,
-            'status' => \App\Enums\ItemStatus::TRADING->value,
+            'status' => ItemStatus::TRADING->value,
         ]);
 
         // .gifファイルのテスト
@@ -262,22 +265,23 @@ class TradeChatTest extends TestCase
         // 2つの取引中の商品を作成
         $item1 = Item::factory()->for($seller, 'seller')->create([
             'buyer_id' => $buyer->id,
-            'status' => \App\Enums\ItemStatus::TRADING->value,
+            'status' => ItemStatus::TRADING->value,
         ]);
 
         $item2 = Item::factory()->for($seller, 'seller')->create([
             'buyer_id' => $buyer->id,
-            'status' => \App\Enums\ItemStatus::TRADING->value,
+            'status' => ItemStatus::TRADING->value,
         ]);
 
         $inputMessage1 = 'チャット1の入力メッセージ';
         $inputMessage2 = 'チャット2の入力メッセージ';
 
         // チャット1で入力した状態で他の画面に遷移したシミュレーション
-        // セッションにチャット1の入力内容を保持
+        // セッションにチャット1の入力内容を保持（ユーザーIDと商品IDを含む）
+        $buyerId = $buyer->id;
         $response1 = $this
             ->actingAs($buyer)
-            ->withSession(['message_input_' . $item1->id => $inputMessage1])
+            ->withSession(['message_input_' . $buyerId . '_' . $item1->id => $inputMessage1])
             ->get("/trade/chat/{$item1->id}");
 
         $response1->assertStatus(200);
@@ -289,12 +293,12 @@ class TradeChatTest extends TestCase
         $this->assertMatchesRegularExpression($textareaPattern1, $html1, 'チャット1のtextareaに入力メッセージが保持されていること');
 
         // チャット2に移動して入力した状態で他の画面に遷移したシミュレーション
-        // セッションにチャット1とチャット2の両方の入力内容を保持
+        // セッションにチャット1とチャット2の両方の入力内容を保持（ユーザーIDと商品IDを含む）
         $response2 = $this
             ->actingAs($buyer)
             ->withSession([
-                'message_input_' . $item1->id => $inputMessage1,
-                'message_input_' . $item2->id => $inputMessage2,
+                'message_input_' . $buyerId . '_' . $item1->id => $inputMessage1,
+                'message_input_' . $buyerId . '_' . $item2->id => $inputMessage2,
             ])
             ->get("/trade/chat/{$item2->id}");
 
@@ -310,8 +314,8 @@ class TradeChatTest extends TestCase
         $response1Again = $this
             ->actingAs($buyer)
             ->withSession([
-                'message_input_' . $item1->id => $inputMessage1,
-                'message_input_' . $item2->id => $inputMessage2,
+                'message_input_' . $buyerId . '_' . $item1->id => $inputMessage1,
+                'message_input_' . $buyerId . '_' . $item2->id => $inputMessage2,
             ])
             ->get("/trade/chat/{$item1->id}");
 
@@ -336,7 +340,7 @@ class TradeChatTest extends TestCase
         $buyer = User::factory()->create();
         $item = Item::factory()->for($seller, 'seller')->create([
             'buyer_id' => $buyer->id,
-            'status' => \App\Enums\ItemStatus::TRADING->value,
+            'status' => ItemStatus::TRADING->value,
         ]);
 
         $message = TradeMessage::factory()->for($item, 'item')->for($buyer, 'user')->create([
@@ -371,7 +375,7 @@ class TradeChatTest extends TestCase
         $buyer = User::factory()->create();
         $item = Item::factory()->for($seller, 'seller')->create([
             'buyer_id' => $buyer->id,
-            'status' => \App\Enums\ItemStatus::TRADING->value,
+            'status' => ItemStatus::TRADING->value,
         ]);
 
         $message = TradeMessage::factory()->for($item, 'item')->for($buyer, 'user')->create();
@@ -400,7 +404,7 @@ class TradeChatTest extends TestCase
         $buyer = User::factory()->create();
         $item = Item::factory()->for($seller, 'seller')->create([
             'buyer_id' => $buyer->id,
-            'status' => \App\Enums\ItemStatus::TRADING->value,
+            'status' => ItemStatus::TRADING->value,
         ]);
 
         // 取引を完了
@@ -437,7 +441,7 @@ class TradeChatTest extends TestCase
         $buyer = User::factory()->create();
         $item = Item::factory()->for($seller, 'seller')->create([
             'buyer_id' => $buyer->id,
-            'status' => \App\Enums\ItemStatus::TRADING->value,
+            'status' => ItemStatus::TRADING->value,
         ]);
 
         // 購入者が取引を完了
@@ -476,7 +480,7 @@ class TradeChatTest extends TestCase
         $buyer = User::factory()->create();
         $item = Item::factory()->for($seller, 'seller')->create([
             'buyer_id' => $buyer->id,
-            'status' => \App\Enums\ItemStatus::TRADING->value,
+            'status' => ItemStatus::TRADING->value,
         ]);
 
         $response = $this
@@ -488,7 +492,7 @@ class TradeChatTest extends TestCase
         // 出品者にメールが送信されたことを確認
         \Illuminate\Support\Facades\Notification::assertSentTo(
             $seller,
-            \App\Notifications\TradeCompletedNotification::class,
+            TradeCompletedNotification::class,
             function ($notification) use ($item) {
                 return $notification->item->id === $item->id;
             }
@@ -509,7 +513,7 @@ class TradeChatTest extends TestCase
         $buyer = User::factory()->create();
         $item = Item::factory()->for($seller, 'seller')->create([
             'buyer_id' => $buyer->id,
-            'status' => \App\Enums\ItemStatus::TRADING->value,
+            'status' => ItemStatus::TRADING->value,
         ]);
 
         $message = TradeMessage::factory()->for($item, 'item')->for($seller, 'user')->create([
@@ -537,7 +541,7 @@ class TradeChatTest extends TestCase
         $buyer = User::factory()->create();
         $item = Item::factory()->for($seller, 'seller')->create([
             'buyer_id' => $buyer->id,
-            'status' => \App\Enums\ItemStatus::TRADING->value,
+            'status' => ItemStatus::TRADING->value,
         ]);
 
         $message = TradeMessage::factory()->for($item, 'item')->for($seller, 'user')->create();
@@ -547,6 +551,90 @@ class TradeChatTest extends TestCase
             ->delete("/trade/chat/{$item->id}/message/{$message->id}");
 
         $response->assertForbidden();
+    }
+
+    /**
+     * US004-FN013: 取引後評価機能（両方が評価完了）
+     * 両方が評価を完了した取引は、チャット画面の「その他の取引」セクションから除外される
+     */
+    public function test_fully_evaluated_trades_are_excluded_from_sidebar_trading_items()
+    {
+        /** @var \App\Models\User $seller */
+        $seller = User::factory()->create();
+        /** @var \App\Models\User $buyer */
+        $buyer = User::factory()->create();
+
+        // 現在の取引（取引中）
+        $currentItem = Item::factory()->for($seller, 'seller')->create([
+            'buyer_id' => $buyer->id,
+            'status' => ItemStatus::TRADING->value,
+        ]);
+
+        // その他の取引（取引中）
+        $otherTradingItem = Item::factory()->for($seller, 'seller')->create([
+            'buyer_id' => $buyer->id,
+            'status' => ItemStatus::TRADING->value,
+        ]);
+
+        // 取引完了済みの商品（評価未完了 - 出品者のみ評価済み）
+        $partiallyEvaluatedItem = Item::factory()->for($seller, 'seller')->create([
+            'buyer_id' => $buyer->id,
+            'status' => ItemStatus::COMPLETED->value,
+        ]);
+        Evaluation::factory()->create([
+            'evaluator_id' => $seller->id,
+            'evaluated_id' => $buyer->id,
+            'item_id' => $partiallyEvaluatedItem->id,
+            'rating' => 5,
+        ]);
+
+        // 取引完了済みの商品（両方が評価完了）
+        $fullyEvaluatedItem = Item::factory()->for($seller, 'seller')->create([
+            'buyer_id' => $buyer->id,
+            'status' => ItemStatus::COMPLETED->value,
+        ]);
+        Evaluation::factory()->create([
+            'evaluator_id' => $seller->id,
+            'evaluated_id' => $buyer->id,
+            'item_id' => $fullyEvaluatedItem->id,
+            'rating' => 5,
+        ]);
+       Evaluation::factory()->create([
+            'evaluator_id' => $buyer->id,
+            'evaluated_id' => $seller->id,
+            'item_id' => $fullyEvaluatedItem->id,
+            'rating' => 4,
+        ]);
+
+        // メソッドから直接確認（まず実装を確認）
+        $otherTradingItems = $buyer->getTradingItemsExcept($currentItem);
+        $itemIds = $otherTradingItems->pluck('id')->toArray();
+
+        $this->assertContains($otherTradingItem->id, $itemIds, 'その他の取引中の商品は含まれること');
+        $this->assertContains($partiallyEvaluatedItem->id, $itemIds, '一部評価済みの商品は含まれること');
+        $this->assertNotContains($fullyEvaluatedItem->id, $itemIds, '両方が評価完了した商品は含まれないこと');
+
+        // 現在の取引のチャット画面にアクセス
+        $response = $this
+            ->actingAs($buyer)
+            ->get("/trade/chat/{$currentItem->id}");
+
+        $response->assertStatus(200);
+        $html = $response->getContent();
+
+        // 商品IDで確認（商品名の部分一致を避けるため）
+        $otherTradingItemUrl = "/trade/chat/{$otherTradingItem->id}";
+        $partiallyEvaluatedItemUrl = "/trade/chat/{$partiallyEvaluatedItem->id}";
+        $fullyEvaluatedItemUrl = "/trade/chat/{$fullyEvaluatedItem->id}";
+
+        // その他の取引中の商品は表示される
+        $this->assertStringContainsString($otherTradingItemUrl, $html, 'その他の取引中の商品のURLが含まれること');
+
+        // 一部評価済みの商品は表示される（まだ評価が必要）
+        $this->assertStringContainsString($partiallyEvaluatedItemUrl, $html, '一部評価済みの商品のURLが含まれること');
+
+        // 両方が評価完了した商品は表示されない
+        $this->assertStringNotContainsString($fullyEvaluatedItemUrl, $html, '両方が評価完了した商品のURLが含まれないこと');
     }
 }
 
