@@ -46,21 +46,21 @@
             <div class='header__mobile-menu'>
                 <nav class='header__mobile-nav'>
                     <div class='header__search'>
-                        <form action='' method='GET'>
-                            <input type='text' name='keyword' placeholder='なにをお探しですか？'>
+                        <form action='{{ route("items.index") }}' method='GET'>
+                            <input type='text' name='keyword' placeholder='なにをお探しですか？' value='{{ $keyword ?? "" }}'>
                         </form>
                     </div>
                     @auth
-                        <a href='' class='header__nav-link'>マイページ</a>
+                        <a href='{{ route("profile.show") }}' class='header__nav-link'>マイページ</a>
                         <form action='{{ route("logout") }}' method='POST'>
                             @csrf
                             <button type='submit' class='header__nav-button'>ログアウト</button>
                         </form>
-                        <a href='' class='header__nav-button header__nav-button'>出品する</a>
+                        <a href='{{ route("items.create") }}' class='header__nav-button header__nav-button'>出品する</a>
                     @else
                         <a href='{{ route("register") }}' class='header__nav-link'>会員登録</a>
                         <a href='{{ route("login") }}' class='header__nav-link'>ログイン</a>
-                        <a href='' class='header__nav-button header__nav-button'>出品する</a>
+                        <a href='{{ route("login") }}' class='header__nav-button header__nav-button'>出品する</a>
                     @endauth
                 </nav>
             </div>

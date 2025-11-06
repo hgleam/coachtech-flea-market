@@ -2132,6 +2132,7 @@ body {
         border: 1px solid var(--background-color);
         border-radius: 4px;
         font-size: var(--font-size-xl);
+        color: var(--header-text-color);
     }
 
     .header__mobile-menu .header__nav-link,
