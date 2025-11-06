@@ -22,12 +22,6 @@ class EnsureEmailIsVerified
         if (! $request->user() ||
             ($request->user() instanceof MustVerifyEmail &&
             ! $request->user()->hasVerifiedEmail())) {
-
-            // ユーザーが認証済みでなく、メール認証が必要な場合
-            if ($request->user() && ! $request->user()->hasVerifiedEmail()) {
-                $request->user()->sendEmailVerificationNotification();
-            }
-
             return $request->expectsJson()
                     ? abort(403, 'アカウントのメールアドレスが未認証です。')
                     : Redirect::guest(URL::route($redirectToRoute ?: 'verification.notice'));
