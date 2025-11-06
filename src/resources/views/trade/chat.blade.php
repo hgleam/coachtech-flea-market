@@ -161,11 +161,6 @@
                             <textarea name='message' id='message-input' class='trade-chat-page__message-input' placeholder='取引メッセージを記入してください' rows='1' required data-item-id='{{ $item->id }}' data-user-id='{{ Auth::id() }}'>{{ old('message', session('message_input_' . Auth::id() . '_' . $item->id, '')) }}</textarea>
                             <div class='trade-chat-page__input-buttons'>
                                 <label for='image-input' class='trade-chat-page__image-button'>
-                                    <svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>
-                                        <rect x='3' y='3' width='18' height='18' rx='2' ry='2'/>
-                                        <circle cx='8.5' cy='8.5' r='1.5'/>
-                                        <polyline points='21 15 16 10 5 21'/>
-                                    </svg>
                                     <span>画像を追加</span>
                                 </label>
                                 <input type='file' id='image-input' name='image' accept='image/jpeg,image/png' style='display: none;'>
@@ -221,7 +216,6 @@
                 </div>
                 <div class='trade-chat-page__evaluation-actions'>
                     <button type='submit' class='trade-chat-page__evaluation-submit'>
-                        <img src='{{ asset("images/message-send.jpg") }}' alt='送信' class='trade-chat-page__evaluation-submit-icon'>
                         <span>送信する</span>
                     </button>
                 </div>
