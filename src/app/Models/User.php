@@ -184,8 +184,8 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * 指定された商品を除く、その他の取引中の商品を取得します。
-     * 各商品に未読メッセージ件数を含めます。
+     * 指定された商品を除く、その他の取引中の商品を最新メッセージ順にソートして取得します。
+     * 各商品に未読メッセージ件数、最新メッセージ日時を含めます。
      * 両方のユーザーが評価を完了している商品は除外します。
      *
      * @param  \App\Models\Item  $excludeItem
@@ -206,9 +206,14 @@ class User extends Authenticatable implements MustVerifyEmail
             return ! in_array($item->id, $fullyEvaluatedItemIds);
         })->map(function ($item) {
             $item->unread_count = $item->getUnreadMessageCount($this);
+            $item->latest_message_at = $item->getLatestTradeMessageDate();
 
             return $item;
-        });
+        })->sortByDesc(function ($item) {
+            $date = $item->latest_message_at;
+
+            return $date instanceof Carbon ? $date->timestamp : strtotime($date);
+        })->values();
     }
 
     /**

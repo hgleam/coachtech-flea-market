@@ -8,6 +8,7 @@ use App\Models\Item;
 use App\Models\User;
 use App\Models\TradeMessage;
 use App\Notifications\TradeCompletedNotification;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use Illuminate\Http\UploadedFile;
@@ -502,6 +503,94 @@ class TradeChatTest extends TestCase
     // ---- 実装にあたり必要であると追加したテスト ----
 
     /**
+     * US001-FN004: 取引自動ソート機能
+     * 取引チャット画面の「その他の取引」の並び順は新規メッセージが来た順に表示する
+     */
+    public function test_other_trading_items_are_sorted_by_latest_message()
+    {
+        /** @var \App\Models\User $seller */
+        $seller = User::factory()->create();
+        /** @var \App\Models\User $buyer */
+        $buyer = User::factory()->create();
+
+        // 4つの取引中の商品を作成（現在の取引1つ + その他の取引3つ）
+        $currentItem = Item::factory()->for($seller, 'seller')->create([
+            'buyer_id' => $buyer->id,
+            'status' => ItemStatus::TRADING->value,
+        ]);
+
+        $item1 = Item::factory()->for($seller, 'seller')->create([
+            'buyer_id' => $buyer->id,
+            'status' => ItemStatus::TRADING->value,
+        ]);
+
+        $item2 = Item::factory()->for($seller, 'seller')->create([
+            'buyer_id' => $buyer->id,
+            'status' => ItemStatus::TRADING->value,
+        ]);
+
+        $item3 = Item::factory()->for($seller, 'seller')->create([
+            'buyer_id' => $buyer->id,
+            'status' => ItemStatus::TRADING->value,
+        ]);
+
+        // item1に最も古いメッセージ
+        TradeMessage::factory()->for($item1, 'item')->for($seller, 'user')->create([
+            'created_at' => Carbon::now()->subDays(3),
+        ]);
+
+        // item2に2番目に新しいメッセージ
+        TradeMessage::factory()->for($item2, 'item')->for($seller, 'user')->create([
+            'created_at' => Carbon::now()->subDays(1),
+        ]);
+
+        // item3に最も新しいメッセージ
+        TradeMessage::factory()->for($item3, 'item')->for($seller, 'user')->create([
+            'created_at' => Carbon::now(),
+        ]);
+
+        // 現在の取引チャット画面にアクセス
+        $response = $this
+            ->actingAs($buyer)
+            ->get("/trade/chat/{$currentItem->id}");
+
+        $response->assertStatus(200);
+
+        // 実際のソート順を確認（メソッドから直接）
+        $otherTradingItems = $buyer->getTradingItemsExcept($currentItem);
+        $itemIds = $otherTradingItems->pluck('id')->toArray();
+
+        // item3が最初、item2が2番目、item1が3番目であることを確認
+        $this->assertEquals($item3->id, $itemIds[0], 'item3が最初であること');
+        $this->assertEquals($item2->id, $itemIds[1], 'item2が2番目であること');
+        $this->assertEquals($item1->id, $itemIds[2], 'item1が3番目であること');
+
+        $html = $response->getContent();
+
+        // HTML内で商品IDを検索（実際のURLパスに含まれている）
+        $item3Url = "/trade/chat/{$item3->id}";
+        $item2Url = "/trade/chat/{$item2->id}";
+        $item1Url = "/trade/chat/{$item1->id}";
+
+        // 各URLがHTMLに含まれていることを確認
+        $this->assertStringContainsString($item3Url, $html, 'item3のURLが含まれること');
+        $this->assertStringContainsString($item2Url, $html, 'item2のURLが含まれること');
+        $this->assertStringContainsString($item1Url, $html, 'item1のURLが含まれること');
+
+        // 並び順を確認（item3がitem2より前に、item2がitem1より前に出現する）
+        $item3Position = strpos($html, $item3Url);
+        $item2Position = strpos($html, $item2Url);
+        $item1Position = strpos($html, $item1Url);
+
+        $this->assertNotFalse($item3Position, 'item3のURLが存在すること');
+        $this->assertNotFalse($item2Position, 'item2のURLが存在すること');
+        $this->assertNotFalse($item1Position, 'item1のURLが存在すること');
+
+        $this->assertLessThan($item2Position, $item3Position, 'item3がitem2より前に表示されること');
+        $this->assertLessThan($item1Position, $item2Position, 'item2がitem1より前に表示されること');
+    }
+
+    /**
      * US003-FN010: メッセージ編集機能
      * 他人のメッセージは編集できない
      */
@@ -599,7 +688,7 @@ class TradeChatTest extends TestCase
             'item_id' => $fullyEvaluatedItem->id,
             'rating' => 5,
         ]);
-       Evaluation::factory()->create([
+        Evaluation::factory()->create([
             'evaluator_id' => $buyer->id,
             'evaluated_id' => $seller->id,
             'item_id' => $fullyEvaluatedItem->id,
