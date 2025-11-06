@@ -108,7 +108,7 @@
                                     </div>
                                     <span class='trade-chat-page__message-user-name'>{{ $message->user->name }}</span>
                                 </div>
-                                <p class='trade-chat-page__message-text'>{{ $message->message }}</p>
+                                <p class='trade-chat-page__message-text'>{!! nl2br(e($message->message)) !!}</p>
                                 @if ($message->image_path)
                                 <div class='trade-chat-page__message-image'>
                                     <img src='{{ asset("storage/" . $message->image_path) }}' alt='メッセージ画像' class='trade-chat-page__message-image-img' data-image-url='{{ asset("storage/" . $message->image_path) }}'>
@@ -125,7 +125,7 @@
                                             alt='{{ $message->user->name }}'>
                                     </div>
                                 </div>
-                                <p class='trade-chat-page__message-text'>{{ $message->message }}</p>
+                                <p class='trade-chat-page__message-text'>{!! nl2br(e($message->message)) !!}</p>
                                 @if ($message->image_path)
                                 <div class='trade-chat-page__message-image'>
                                     <img src='{{ asset("storage/" . $message->image_path) }}' alt='メッセージ画像' class='trade-chat-page__message-image-img' data-image-url='{{ asset("storage/" . $message->image_path) }}'>
