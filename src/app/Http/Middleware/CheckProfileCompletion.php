@@ -25,9 +25,11 @@ class CheckProfileCompletion
 
         // ログインしていて、かつ現在のルートがプロフィール関連ではない場合
         if (Auth::check() && ! $isProfileRoute) {
-            $profileIsIncomplete = empty($user->name) ||
-                                   empty($user->zip_code) ||
-                                   empty($user->address);
+            // プロフィール情報が不完全かどうかをチェック
+            // null、空文字列、または空白文字のみの場合をチェック
+            $profileIsIncomplete = empty(trim($user->name ?? '')) ||
+                                   empty(trim($user->zip_code ?? '')) ||
+                                   empty(trim($user->address ?? ''));
 
             if ($profileIsIncomplete) {
                 return redirect()->route('profile.edit')->with('warning', 'プロフィール情報をすべて入力してください。');
